@@ -1,30 +1,47 @@
+<!--Add your HTML code here-->
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
+  <div>
+    <div>Bot昵称：{{ botName }}</div>
+    <div>Bot战力：{{ botRating }}</div>
+  </div>
   <router-view/>
 </template>
 
+<!--Add your JavaScript code here-->
+<script>
+import $ from 'jquery';
+import {ref} from 'vue';
+
+export default {
+  name: 'App',
+  setup: () => {
+    let botName = ref("");
+    let botRating = ref("");
+
+    // 使用jQuery发送AJAX请求到指定的URL获取Bot信息，在请求成功后执行回调函数
+    $.ajax({
+      url: "http://localhost:3000/pk/getBotInfo",
+      type: "GET",
+      success: response => {
+        // 将返回的Bot信息赋值给对应的变量
+        botName.value = response.name;
+        botRating.value = response.rating;
+      }
+    })
+
+    return {
+      botName,
+      botRating
+    }
+  }
+}
+</script>
+
+<!--Add your CSS code here-->
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+body {
+  /*添加背景图片并设置背景大小为cover*/
+  background-image: url("@/assets/background.png");
+  background-size: cover;
 }
 </style>
