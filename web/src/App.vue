@@ -1,38 +1,20 @@
 <!--Add your HTML code here-->
 <template>
-  <div>
-    <div>Bot昵称：{{ botName }}</div>
-    <div>Bot战力：{{ botRating }}</div>
-  </div>
+  <NavBar/>
   <router-view/>
 </template>
 
 <!--Add your JavaScript code here-->
 <script>
-import $ from 'jquery';
-import {ref} from 'vue';
+// 导入NavBar组件
+import NavBar from "@/components/NavBar.vue"
+// 导入bootstrap的css和js
+import "bootstrap/dist/css/bootstrap.min.css"
+import "bootstrap/dist/js/bootstrap"
 
 export default {
-  name: 'App',
-  setup: () => {
-    let botName = ref("");
-    let botRating = ref("");
-
-    // 使用jQuery发送AJAX请求到指定的URL获取Bot信息，在请求成功后执行回调函数
-    $.ajax({
-      url: "http://localhost:3000/pk/getBotInfo",
-      type: "GET",
-      success: response => {
-        // 将返回的Bot信息赋值给对应的变量
-        botName.value = response.name;
-        botRating.value = response.rating;
-      }
-    })
-
-    return {
-      botName,
-      botRating
-    }
+  components: {
+    NavBar
   }
 }
 </script>
