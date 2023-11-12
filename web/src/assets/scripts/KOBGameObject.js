@@ -36,8 +36,8 @@ export class KOBGameObject {
     }
 }
 
-
-let lastTimestamp;      // 上一次执行的时间
+// 上一次执行的时间
+let lastTimestamp;
 const step = timestamp => {
 
     // 遍历所有的KOB_GAME_OBJECTS对象
