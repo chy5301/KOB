@@ -23,7 +23,7 @@ export default {
 <style>
 body {
   /*添加背景图片并设置背景大小为cover*/
-  background-image: url("@/assets/background.png");
+  background-image: url("@/assets/images/background.png");
   background-size: cover;
 }
 </style>
