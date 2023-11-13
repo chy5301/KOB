@@ -2,6 +2,7 @@ const KOB_GAME_OBJECTS = [];
 
 export class KOBGameObject {
     constructor() {
+        // 每创建一个，push一个，先创建先push。保证后创建的对象显示在最上层
         KOB_GAME_OBJECTS.push(this);
         this.timeDelta = 0;
         this.hasCalledStart = false;
