@@ -60,14 +60,14 @@ export class GameMap extends KOBGameObject {
         return point;
     }
 
-    // 在并查集中合并point1点和point2点对应的block
-    merge(point1, point2) {
-        const rootPoint1 = this.findRoot(point1);
-        const rootPoint2 = this.findRoot(point2);
+    // 在并查集中合并firstPoint点和secondPoint点对应的block
+    merge(firstPoint, secondPoint) {
+        const firstRootPoint = this.findRoot(firstPoint);
+        const secondRootPoint = this.findRoot(secondPoint);
 
-        if (rootPoint1.equals(rootPoint2))
+        if (firstRootPoint.equals(secondRootPoint))
             return;
-        this.blocks[rootPoint2.r][rootPoint2.c].parentPoint = rootPoint1;
+        this.blocks[secondRootPoint.r][secondRootPoint.c].parentPoint = firstRootPoint;
     }
 
     // 创建障碍物
