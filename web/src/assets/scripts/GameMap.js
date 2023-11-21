@@ -34,7 +34,7 @@ export class GameMap extends KOBGameObject {
         // 行列数
         this.size = 16;
         // 内部墙体半数（为了保证地图公平，以对角线为分界进行随机分配，所以只随机一般）
-        this.innerWallsCount = 48;
+        this.innerWallsCount = 32;
         // 墙体
         this.walls = [];
         // 所有区块
@@ -153,11 +153,14 @@ export class GameMap extends KOBGameObject {
         // 以左下角为起点
         const startPoint = new Point(this.size - 2, 1);
         let rootCount;
+        let max = 100000;
         // 创建墙体直到满足条件
         do {
             this.createWalls();
             rootCount = this.floodFill(startPoint);
-        } while (rootCount > 1);
+            console.log(rootCount+" "+max);
+            max--;
+        } while (rootCount > 1 && max > 0);
 
         this.pushWalls();
     }
