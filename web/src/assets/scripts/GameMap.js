@@ -1,25 +1,7 @@
 import {KOBGameObject} from "@/assets/scripts/KOBGameObject";
 import {Wall} from "@/assets/scripts/Wall";
+import {Snake} from "@/assets/scripts/Snake";
 
-// 坐标点
-class Point {
-    constructor(r, c) {
-        this.r = r;
-        this.c = c;
-    }
-
-    equals(other) {
-        return this.r === other.r && this.c === other.c;
-    }
-}
-
-// 区块
-class Block {
-    constructor(r, c) {
-        this.parentPoint = new Point(r, c);
-        this.isWall = false;
-    }
-}
 
 export class GameMap extends KOBGameObject {
     constructor(ctx, parent) {
@@ -43,6 +25,70 @@ export class GameMap extends KOBGameObject {
             this.blocks[r] = [];
             for (let c = 0; c < this.size; c++)
                 this.blocks[r][c] = new Block(r, c);
+        }
+        // 蛇
+        this.snakes = [
+            // 以左下角为起点的蓝色蛇
+            new Snake({id: 0, color: "#4876ec", r: this.size - 2, c: 1}, this),
+            // 以右上角为起点的红色蛇
+            new Snake({id: 1, color: "#f94848", r: 1, c: this.size - 2}, this),
+        ];
+    }
+
+    // 只在启动时执行一次
+    start() {
+        // 以左下角为起点
+        const startPoint = new Point(this.size - 2, 1);
+        let rootCount;
+        let max = 100000;
+        // 创建墙体直到满足条件
+        do {
+            this.createWalls();
+            rootCount = this.floodFill(startPoint);
+            console.log(rootCount + " " + max);
+            max--;
+        } while (rootCount > 1 && max > 0);
+
+        this.pushWalls();
+    }
+
+    // 更新Map的边长
+    updateSize() {
+        // 求格子单位长度
+        this.L = Math.floor(Math.min(this.parent.clientWidth / this.size, this.parent.clientHeight / this.size));
+        // 计算实际宽度
+        this.ctx.canvas.width = this.L * this.size;
+        // 计算实际高度
+        this.ctx.canvas.height = this.L * this.size;
+    }
+
+    // 除了第一帧之外，每一帧执行一次
+    update() {
+        // 每一帧计算新的Map边长
+        this.updateSize();
+        // 每帧渲染一次
+        this.render();
+    }
+
+    // 渲染
+    render() {
+        // 定义偶数格子的颜色
+        const colorEven = "#aad751";
+        // 定义奇数格子的颜色
+        const colorOdd = "#a2d149";
+        // 循环绘制每一行的格子
+        for (let r = 0; r < this.size; r++) {
+            // 循环绘制每一列的格子
+            for (let c = 0; c < this.size; c++) {
+                // 判断当前格子是偶数格子还是奇数格子并设置对应的颜色
+                if ((r + c) % 2 === 0) {
+                    this.ctx.fillStyle = colorEven;
+                } else {
+                    this.ctx.fillStyle = colorOdd;
+                }
+                // 绘制格子
+                this.ctx.fillRect(c * this.L, r * this.L, this.L, this.L);
+            }
         }
     }
 
@@ -116,7 +162,6 @@ export class GameMap extends KOBGameObject {
                 if (newR < 0 || newC < 0 || newR === this.size || newC === this.size)
                     continue;
 
-
                 newPoint = new Point(newR, newC);
                 // 如果是墙体或已经被合并，就跳过
                 if (this.blocks[newR][newC].isWall || !this.isRoot(newPoint))
@@ -148,60 +193,34 @@ export class GameMap extends KOBGameObject {
                     this.walls.push(new Wall(r, c, this));
     }
 
-    // 只在启动时执行一次
-    start() {
-        // 以左下角为起点
-        const startPoint = new Point(this.size - 2, 1);
-        let rootCount;
-        let max = 100000;
-        // 创建墙体直到满足条件
-        do {
-            this.createWalls();
-            rootCount = this.floodFill(startPoint);
-            console.log(rootCount+" "+max);
-            max--;
-        } while (rootCount > 1 && max > 0);
-
-        this.pushWalls();
-    }
-
-    // 更新Map的边长
-    updateSize() {
-        // 求格子单位长度
-        this.L = Math.floor(Math.min(this.parent.clientWidth / this.size, this.parent.clientHeight / this.size));
-        // 计算实际宽度
-        this.ctx.canvas.width = this.L * this.size;
-        // 计算实际高度
-        this.ctx.canvas.height = this.L * this.size;
-    }
-
-    // 除了第一帧之外，每一帧执行一次
-    update() {
-        // 每一帧计算新的Map边长
-        this.updateSize();
-        // 每帧渲染一次
-        this.render();
-    }
-
-    // 渲染
-    render() {
-        // 定义偶数格子的颜色
-        const colorEven = "#aad751";
-        // 定义奇数格子的颜色
-        const colorOdd = "#a2d149";
-        // 循环绘制每一行的格子
-        for (let r = 0; r < this.size; r++) {
-            // 循环绘制每一列的格子
-            for (let c = 0; c < this.size; c++) {
-                // 判断当前格子是偶数格子还是奇数格子并设置对应的颜色
-                if ((r + c) % 2 === 0) {
-                    this.ctx.fillStyle = colorEven;
-                } else {
-                    this.ctx.fillStyle = colorOdd;
-                }
-                // 绘制格子
-                this.ctx.fillRect(c * this.L, r * this.L, this.L, this.L);
-            }
+    // 判断两条蛇是否都准备好进行下一回合的移动
+    checkSnakesReady() {
+        for (const snake of this.snakes) {
+            if (snake.status !== "idle")
+                return false;
+            if (snake.deriction === -1)
+                return false;
         }
+        return true;
+    }
+}
+
+// 坐标点
+class Point {
+    constructor(r, c) {
+        this.r = r;
+        this.c = c;
+    }
+
+    equals(other) {
+        return this.r === other.r && this.c === other.c;
+    }
+}
+
+// 区块
+class Block {
+    constructor(r, c) {
+        this.parentPoint = new Point(r, c);
+        this.isWall = false;
     }
 }
