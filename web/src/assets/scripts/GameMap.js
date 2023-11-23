@@ -45,11 +45,45 @@ export class GameMap extends KOBGameObject {
         do {
             this.createWalls();
             rootCount = this.floodFill(startPoint);
-            console.log(rootCount + " " + max);
             max--;
         } while (rootCount > 1 && max > 0);
-
         this.pushWalls();
+
+        this.addListeningEvents();
+    }
+
+    addListeningEvents() {
+        this.ctx.canvas.focus();
+
+        const [snake0, snake1] = this.snakes;
+        this.ctx.canvas.addEventListener("keydown", e => {
+            switch (e.key) {
+                case 'w':
+                    snake0.setDirection(0);
+                    break;
+                case 'd':
+                    snake0.setDirection(1);
+                    break;
+                case 's':
+                    snake0.setDirection(2);
+                    break;
+                case 'a':
+                    snake0.setDirection(3);
+                    break;
+                case 'ArrowUp':
+                    snake1.setDirection(0);
+                    break;
+                case 'ArrowRight':
+                    snake1.setDirection(1);
+                    break;
+                case 'ArrowDown':
+                    snake1.setDirection(2);
+                    break;
+                case 'ArrowLeft':
+                    snake1.setDirection(3);
+                    break;
+            }
+        });
     }
 
     // 更新Map的边长
@@ -66,6 +100,9 @@ export class GameMap extends KOBGameObject {
     update() {
         // 每一帧计算新的Map边长
         this.updateSize();
+        // 如果两条蛇都准备好移动，进入下一步
+        if (this.checkSnakesReady())
+            this.nextStep();
         // 每帧渲染一次
         this.render();
     }
@@ -198,9 +235,36 @@ export class GameMap extends KOBGameObject {
         for (const snake of this.snakes) {
             if (snake.status !== "idle")
                 return false;
-            if (snake.deriction === -1)
+            if (snake.direction === -1)
                 return false;
         }
+        return true;
+    }
+
+    // 让所有的蛇进行下一步
+    nextStep() {
+        for (const snake of this.snakes)
+            snake.nextStep();
+    }
+
+    // 检查蛇是否存活（没有撞到某条蛇的身体或墙）
+    checkSnakesAlive(head) {
+        // 检查所有墙体
+        for (const wall of this.walls)
+            if (wall.r === head.r && wall.c === head.c)
+                return false;
+
+        // 检查所有蛇的身体
+        for (const snake of this.snakes) {
+            let snakeLength = snake.cells.length;
+            // 当蛇尾会向前移动时，不需要判断是否碰撞
+            if (!snake.checkTailIncreasing())
+                snakeLength--;
+            for (let i = 0; i < snakeLength; i++)
+                if (snake.cells[i].r === head.r && snake.cells[i].c === head.c)
+                    return false;
+        }
+
         return true;
     }
 }
