@@ -19,10 +19,17 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    /**
+     * 获取Token
+     *
+     * @param username 用户名
+     * @param password 密码
+     * @return 包含Token信息的Map对象
+     */
     @Override
     public Map<String, String> getToken(String username, String password) {
         // 创建一个用于存储返回信息的Map
-        Map<String, String> returnInfoMap = new HashMap<>();
+        Map<String, String> returnInfo = new HashMap<>();
         // 创建一个带有用户名和密码的UsernamePasswordAuthenticationToken对象
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(username, password);
@@ -33,10 +40,10 @@ public class LoginServiceImpl implements LoginService {
             authenticate = authenticationManager.authenticate(authenticationToken);
         } catch (Exception e) {
             // 返回异常信息
-            returnInfoMap.put("message", "exception");
-            returnInfoMap.put("exception_class_name", e.getClass().getName());
-            returnInfoMap.put("exception_message", e.getMessage());
-            return returnInfoMap;
+            returnInfo.put("status_message", "Exception");
+            returnInfo.put("exception_class_name", e.getClass().getName());
+            returnInfo.put("exception_message", e.getMessage());
+            return returnInfo;
         }
 
         // 将认证后的用户信息转换为UserDetailsImpl对象并赋值给loginUser
@@ -47,10 +54,10 @@ public class LoginServiceImpl implements LoginService {
         String jwtToken = JwtUtil.createJWT(user.getId().toString());
 
         // 返回token信息
-        returnInfoMap.put("message", "success");
-        returnInfoMap.put("token", jwtToken);
+        returnInfo.put("status_message", "Success");
+        returnInfo.put("token", jwtToken);
 
         // 返回map对象
-        return returnInfoMap;
+        return returnInfo;
     }
 }
