@@ -1,14 +1,12 @@
-import { createStore } from 'vuex'
+import {createStore} from 'vuex'
+import UserModel from '@/store/user'
 
 export default createStore({
-  state: {
-  },
-  getters: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
-  modules: {
-  }
+    state: {},
+    getters: {},
+    mutations: {},
+    actions: {},
+    modules: {
+        user: UserModel,
+    }
 })

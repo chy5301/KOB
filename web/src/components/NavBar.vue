@@ -1,13 +1,21 @@
 <script>
 import {useRoute} from "vue-router";
 import {computed} from "vue";
+import {useStore} from "vuex";
 
 export default {
   setup() {
+    const store = useStore();
     const route = useRoute();
     let routName = computed(() => route.name);
+
+    const logout = () => {
+      store.dispatch("logout");
+    }
+
     return {
-      routName
+      routName,
+      logout,
     }
   }
 }
@@ -30,10 +38,10 @@ export default {
             <router-link class="nav-link" active-class="active" :to="{name:'ranklist_index'}">排行榜</router-link>
           </li>
         </ul>
-        <ul class="navbar-nav">
+        <ul class="navbar-nav" v-if="$store.state.user.isLoggedIn">
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              用户
+              {{ $store.state.user.username }}
             </a>
             <ul class="dropdown-menu">
               <li>
@@ -45,8 +53,20 @@ export default {
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <li><a class="dropdown-item" href="#">退出</a></li>
+              <li><a class="dropdown-item" href="#" @click="logout">退出</a></li>
             </ul>
+          </li>
+        </ul>
+        <ul class="navbar-nav" v-else>
+          <li class="nav-item">
+            <router-link class="nav-link" :to="{name:'user_account_login'}" role="button">
+              登录
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" :to="{name:'user_account_register'}" role="button">
+              注册
+            </router-link>
           </li>
         </ul>
       </div>
