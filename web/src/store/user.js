@@ -47,6 +47,8 @@ export default {
                 success(response) {
                     // 如果响应的状态消息为"Success"
                     if (response.status_message === "Success") {
+                        // 将token信息储存到本地
+                        localStorage.setItem("jwtToken",response.token);
                         // 将响应的token信息更新到token
                         context.commit("updateToken", response.token);
                         // 调用成功回调函数
@@ -69,6 +71,8 @@ export default {
                 url: "http://localhost:3000/user/account/info",
                 // 请求类型
                 type: "GET",
+                // 将ajax函数从默认异步修改为同步的
+                async: false,
                 // 请求头部信息
                 headers: {
                     // 添加授权头，用于身份验证
@@ -96,10 +100,11 @@ export default {
                     data.error(response);
                 }
             })
-
         },
         // 登出用户
         logout(context){
+            // 清除用户信息
+            localStorage.removeItem("jwtToken");
             context.commit("clearUser");
         }
     },
