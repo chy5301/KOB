@@ -27,7 +27,6 @@ export default {
           })
         },
         error(response) {
-          console.log(response);
           exception_message.value = response.exception_message;
         }
       })
