@@ -35,44 +35,44 @@ public class RegisterServiceImpl implements RegisterService {
         Map<String, String> returnInfo = new HashMap<>(); // 返回结果信息
 
         if (username == null) { // 判断用户名是否为空
-            returnInfo.put("status_message", "Invalid input"); // 设置状态信息为无效输入
+            returnInfo.put("status_message", "Exception"); // 设置状态信息为异常
             returnInfo.put("exception_message", "用户名不能为空"); // 设置异常信息为用户名不能为空
             return returnInfo; // 返回结果信息
         }
 
         if (password == null || confirmPassword == null) { // 判断密码是否为空
-            returnInfo.put("status_message", "Invalid input"); // 设置状态信息为无效输入
+            returnInfo.put("status_message", "Exception"); // 设置状态信息为异常
             returnInfo.put("exception_message", "密码不能为空"); // 设置异常信息为密码不能为空
             return returnInfo; // 返回结果信息
         }
 
         username = username.trim(); // 去除用户名两边的空格
         if (username.isEmpty()) { // 判断用户名是否为空
-            returnInfo.put("status_message", "Invalid input"); // 设置状态信息为无效输入
+            returnInfo.put("status_message", "Exception"); // 设置状态信息为异常
             returnInfo.put("exception_message", "用户名不能为空"); // 设置异常信息为用户名不能为空
             return returnInfo; // 返回结果信息
         }
 
         if (password.isEmpty() || confirmPassword.isEmpty()) { // 判断密码是否为空
-            returnInfo.put("status_message", "Invalid input"); // 设置状态信息为无效输入
+            returnInfo.put("status_message", "Exception"); // 设置状态信息为异常
             returnInfo.put("exception_message", "密码不能为空"); // 设置异常信息为密码不能为空
             return returnInfo; // 返回结果信息
         }
 
         if (username.length() > 100) { // 判断用户名长度是否超过限制
-            returnInfo.put("status_message", "Invalid input"); // 设置状态信息为无效输入
+            returnInfo.put("status_message", "Exception"); // 设置状态信息为异常
             returnInfo.put("exception_message", "用户名长度不能大于100"); // 设置异常信息为用户名长度不能大于100
             return returnInfo; // 返回结果信息
         }
 
         if (password.length() > 100 || confirmPassword.length() > 100) { // 判断密码长度是否超过限制
-            returnInfo.put("status_message", "Invalid input"); // 设置状态信息为无效输入
+            returnInfo.put("status_message", "Exception"); // 设置状态信息为异常
             returnInfo.put("exception_message", "密码长度不能大于100"); // 设置异常信息为密码长度不能大于100
             return returnInfo; // 返回结果信息
         }
 
         if (!password.equals(confirmPassword)) { // 判断密码和确认密码是否一致
-            returnInfo.put("status_message", "Invalid input"); // 设置状态信息为无效输入
+            returnInfo.put("status_message", "Exception"); // 设置状态信息为异常
             returnInfo.put("exception_message", "两次输入的密码不一致"); // 设置异常信息为两次输入的密码不一致
             return returnInfo; // 返回结果信息
         }
@@ -81,7 +81,7 @@ public class RegisterServiceImpl implements RegisterService {
         userQueryWrapper.eq("username", username); // 设置查询字段和值
         List<User> users = userMapper.selectList(userQueryWrapper); // 查询用户名是否已存在
         if (!users.isEmpty()) { // 判断用户名是否已存在
-            returnInfo.put("status_message", "Invalid input"); // 设置状态信息为无效输入
+            returnInfo.put("status_message", "Exception"); // 设置状态信息为异常
             returnInfo.put("exception_message", "用户名已存在"); // 设置异常信息为用户名已存在
             return returnInfo; // 返回结果信息
         }

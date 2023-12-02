@@ -1,9 +1,7 @@
 package com.kob.backend.service.user.bot;
 
-import com.kob.backend.pojo.Bot;
-
-import java.util.List;
+import java.util.Map;
 
 public interface GetBotListService {
-    List<Bot> getBotList();
+    Map<String, Object> getBotList();
 }

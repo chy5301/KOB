@@ -34,13 +34,13 @@ public class AddBotServiceImpl implements AddBotService {
         Map<String, String> returnInfo = new HashMap<>();
 
         if (title == null || title.isEmpty()) {
-            returnInfo.put("status_message", "Invalid input");
+            returnInfo.put("status_message", "Exception");
             returnInfo.put("exception_message", "标题不能为空");
             return returnInfo;
         }
 
         if (title.length() > 100) {
-            returnInfo.put("status_message", "Invalid input");
+            returnInfo.put("status_message", "Exception");
             returnInfo.put("exception_message", "标题长度不能大于100");
             return returnInfo;
         }
@@ -50,19 +50,19 @@ public class AddBotServiceImpl implements AddBotService {
         }
 
         if (description.length() > 300) {
-            returnInfo.put("status_message", "Invalid input");
+            returnInfo.put("status_message", "Exception");
             returnInfo.put("exception_message", "描述长度不能大于300");
             return returnInfo;
         }
 
         if (content == null || content.isEmpty()) {
-            returnInfo.put("status_message", "Invalid input");
+            returnInfo.put("status_message", "Exception");
             returnInfo.put("exception_message", "代码不能为空");
             return returnInfo;
         }
 
         if (content.length() > 10000) {
-            returnInfo.put("status_message", "Invalid input");
+            returnInfo.put("status_message", "Exception");
             returnInfo.put("exception_message", "代码长度不能大于10000");
             return returnInfo;
         }
@@ -71,7 +71,6 @@ public class AddBotServiceImpl implements AddBotService {
         Bot bot = new Bot(null, user.getId(), title, description, content, 1500, currentTime, currentTime);
         botMapper.insert(bot);
         returnInfo.put("status_message","Success");
-
         return returnInfo;
     }
 }
