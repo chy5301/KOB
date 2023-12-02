@@ -1,10 +1,8 @@
 package com.kob.backend.service.impl.user.account;
 
 import com.kob.backend.pojo.User;
-import com.kob.backend.service.impl.utils.UserDetailsImpl;
+import com.kob.backend.service.impl.utils.UserUtil;
 import com.kob.backend.service.user.account.InfoService;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -19,15 +17,8 @@ public class InfoServiceImpl implements InfoService {
      */
     @Override
     public Map<String, String> getInfo() {
-
-        // 获取当前认证对象
-        UsernamePasswordAuthenticationToken authenticationToken =
-                (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-
-        // 获取当前登录用户的详情
-        UserDetailsImpl loginUser = (UserDetailsImpl) authenticationToken.getPrincipal();
-        // 获取用户对象
-        User user = loginUser.getUser();
+        // 获取当前登录用户
+        User user= UserUtil.getLoggedinUser();
 
         // 创建返回信息的Map对象
         Map<String, String> returnInfo = new HashMap<>();

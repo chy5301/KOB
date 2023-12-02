@@ -28,11 +28,13 @@ public class LoginServiceImpl implements LoginService {
      */
     @Override
     public Map<String, String> getToken(String username, String password) {
-        // 创建一个用于存储返回信息的Map
-        Map<String, String> returnInfo = new HashMap<>();
+
         // 创建一个带有用户名和密码的UsernamePasswordAuthenticationToken对象
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(username, password);
+
+        // 创建一个用于存储返回信息的Map
+        Map<String, String> returnInfo = new HashMap<>();
 
         // 使用认证管理器对authenticationToken进行认证，如果认证失败会抛出异常
         Authentication authenticate;

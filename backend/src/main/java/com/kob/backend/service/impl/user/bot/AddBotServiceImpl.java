@@ -3,11 +3,9 @@ package com.kob.backend.service.impl.user.bot;
 import com.kob.backend.mapper.BotMapper;
 import com.kob.backend.pojo.Bot;
 import com.kob.backend.pojo.User;
-import com.kob.backend.service.impl.utils.UserDetailsImpl;
+import com.kob.backend.service.impl.utils.UserUtil;
 import com.kob.backend.service.user.bot.AddBotService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,10 +20,7 @@ public class AddBotServiceImpl implements AddBotService {
 
     @Override
     public Map<String, String> addBot(Map<String, String> data) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl loginUser = (UserDetailsImpl) authenticationToken.getPrincipal();
-        User user = loginUser.getUser();
+        User user= UserUtil.getLoggedinUser();
 
         String title = data.get("title");
         String description = data.get("description");

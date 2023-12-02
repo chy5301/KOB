@@ -3,11 +3,9 @@ package com.kob.backend.service.impl.user.bot;
 import com.kob.backend.mapper.BotMapper;
 import com.kob.backend.pojo.Bot;
 import com.kob.backend.pojo.User;
-import com.kob.backend.service.impl.utils.UserDetailsImpl;
+import com.kob.backend.service.impl.utils.UserUtil;
 import com.kob.backend.service.user.bot.RemoveBotService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -22,10 +20,7 @@ public class RemoveBotServiceImpl implements RemoveBotService {
 
     @Override
     public Map<String, String> removeBot(Map<String, String> data) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl loginUser = (UserDetailsImpl) authenticationToken.getPrincipal();
-        User user = loginUser.getUser();
+        User user= UserUtil.getLoggedinUser();
 
         int botId = Integer.parseInt(data.get("bot_id"));
         Bot bot = botMapper.selectById(botId);
