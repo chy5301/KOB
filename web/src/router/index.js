@@ -93,7 +93,7 @@ router.beforeEach((to, from, next) => {
                 // 直接跳转
                 next();
             },
-            error(){
+            error() {
                 alert("登录信息已过期，请重新登录！");
                 // 调用logout函数清除浏览器内存和localStorage中的jwtToken
                 store.dispatch("logout");

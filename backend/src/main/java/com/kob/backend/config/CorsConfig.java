@@ -1,67 +1,37 @@
 package com.kob.backend.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
-public class CorsConfig implements Filter {
-    @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-        // 将ServletRequest转换为HttpServletRequest
-        HttpServletRequest request = (HttpServletRequest) req;
+public class CorsConfig {
 
-        // 将ServletResponse转换为HttpServletResponse
-        HttpServletResponse response = (HttpServletResponse) res;
+    /**
+     * 配置跨域请求过滤器
+     * @return 跨域请求过滤器
+     */
+    @Bean
+    public CorsFilter corsFilter() {
+        // 创建一个UrlBasedCorsConfigurationSource对象，用于存储跨域资源配置
+        final UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+        // 创建一个CorsConfiguration对象，用于配置跨域请求的允许条件
+        final CorsConfiguration corsConfiguration = new CorsConfiguration();
 
-        // 获取请求头中的Origin字段
-        String origin = request.getHeader("Origin");
+        // 设置允许跨域请求包含凭证（如cookie）
+        corsConfiguration.setAllowCredentials(true);
+        // 设置允许所有域名进行跨域请求
+        corsConfiguration.addAllowedOriginPattern("*");
+        // 设置允许所有请求头部信息进行跨域请求
+        corsConfiguration.addAllowedHeader("*");
+        // 设置允许所有HTTP请求方法进行跨域请求
+        corsConfiguration.addAllowedMethod("*");
 
-        // 如果Origin不为空，则设置响应头中的Access-Control-Allow-Origin字段为Origin的值
-        if (origin != null) {
-            response.setHeader("Access-Control-Allow-Origin", origin);
-        }
-
-        // 获取请求头中的Access-Control-Request-Headers字段
-        String headers = request.getHeader("Access-Control-Request-Headers");
-
-        // 如果Access-Control-Request-Headers不为空，则设置响应头中的Access-Control-Allow-Headers
-        // 和Access-Control-Expose-Headers字段为Access-Control-Request-Headers的值
-        if (headers != null) {
-            response.setHeader("Access-Control-Allow-Headers", headers);
-            response.setHeader("Access-Control-Expose-Headers", headers);
-        }
-
-        // 设置响应头中的Access-Control-Allow-Methods字段为"*"，表示支持所有HTTP方法
-        response.setHeader("Access-Control-Allow-Methods", "*");
-
-        // 设置响应头中的Access-Control-Max-Age字段为3600，表示预检请求的缓存有效期为3600秒
-        response.setHeader("Access-Control-Max-Age", "3600");
-
-        // 设置响应头中的Access-Control-Allow-Credentials字段为"true"，表示允许发送Cookie
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-
-        // 继续过滤器链的执行
-        chain.doFilter(request, response);
-    }
-
-
-    @Override
-    public void init(FilterConfig filterConfig) {
-
-    }
-
-    @Override
-    public void destroy() {
-        Filter.super.destroy();
+        // 注册跨域资源配置，将上述配置应用到所有URL
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+        // 创建一个CorsFilter对象，用于过滤跨域请求并返回相应的响应头
+        return new CorsFilter(urlBasedCorsConfigurationSource);
     }
 }
-
-//作者：yxc
-//链接：https://www.acwing.com/file_system/file/content/whole/index/content/5997810/
-//来源：AcWing
-//著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
