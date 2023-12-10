@@ -1,5 +1,6 @@
 package com.kob.backend.consumer;
 
+import com.kob.backend.consumer.utils.JwtAuthenticationUtil;
 import com.kob.backend.mapper.UserMapper;
 import com.kob.backend.pojo.User;
 import jakarta.websocket.*;
@@ -27,20 +28,26 @@ public class WebSocketServer {
     }
 
     @OnOpen
-    public void onOpen(Session session, @PathParam("token") String token) {
+    public void onOpen(Session session, @PathParam("token") String token) throws IOException {
         this.session = session;
         System.out.println("Connected!");
-        System.out.println(session.toString());
 
-        Integer userId = Integer.parseInt(token);
+        Integer userId = JwtAuthenticationUtil.getUserId(token);
         this.user = userMapper.selectById(userId);
-        users.put(userId, this);
+
+        if (this.user!=null){
+            users.put(userId, this);
+            // System.out.println("UserId = " + user.getId());
+        }else {
+            this.session.close();
+        }
+        System.out.println(users);
     }
 
     @OnClose
     public void onClose() {
         System.out.println("Disconnected!");
-        System.out.println(this.session.toString());
+        System.out.println("UserId = " + user.getId());
 
         if (this.user != null) {
             users.remove(this.user.getId());
