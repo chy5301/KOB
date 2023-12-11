@@ -1,5 +1,6 @@
 package com.kob.backend.consumer;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.consumer.utils.JwtAuthenticationUtil;
 import com.kob.backend.mapper.UserMapper;
 import com.kob.backend.pojo.User;
@@ -10,14 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 @Component
 @ServerEndpoint("/websocket/{token}")
 public class WebSocketServer {
 
-    // ConcurrentHashMap是一个线程安全的哈希表，用于将用户ID映射到WebSocketServer实例
-    private static ConcurrentHashMap<Integer, WebSocketServer> users = new ConcurrentHashMap<>();
+    // ConcurrentHashMap是一个线程安全的HashMap，用于将用户ID映射到WebSocketServer实例
+    private static final ConcurrentHashMap<Integer, WebSocketServer> users = new ConcurrentHashMap<>();
+    // CopyOnWriteArraySet是一个线程安全Set，作为匹配池
+    private static final CopyOnWriteArraySet<User> matchPool = new CopyOnWriteArraySet<>();
     private User user;
     private Session session = null;
     private static UserMapper userMapper;
@@ -35,10 +40,10 @@ public class WebSocketServer {
         Integer userId = JwtAuthenticationUtil.getUserId(token);
         this.user = userMapper.selectById(userId);
 
-        if (this.user!=null){
+        if (this.user != null) {
             users.put(userId, this);
             // System.out.println("UserId = " + user.getId());
-        }else {
+        } else {
             this.session.close();
         }
         System.out.println(users);
@@ -51,13 +56,23 @@ public class WebSocketServer {
 
         if (this.user != null) {
             users.remove(this.user.getId());
+            matchPool.remove(this.user);
         }
     }
 
+    // 一般把onMessage当做一个路由，判断一下应该把任务交给谁
     @OnMessage
     public void onMessage(String message, Session session) {
         System.out.println("Receive message!");
         System.out.println(message);
+        JSONObject data = JSONObject.parseObject(message);
+        String event = data.getString("event");
+        // 注意：event可能为空，所以不要写event.equals("start-matching")
+        if ("start-matching".equals(event)) {
+            startMatching();
+        } else if ("stop-matching".equals(event)) {
+            stopMatching();
+        }
     }
 
     @OnError
@@ -73,5 +88,36 @@ public class WebSocketServer {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void startMatching() {
+        System.out.println("Start matching!");
+        matchPool.add(this.user);
+
+        // 临时调试用，后续换成微服务
+        while (matchPool.size() >= 2) {
+            Iterator<User> iterator = matchPool.iterator();
+            User player1 = iterator.next();
+            User player2 = iterator.next();
+            matchPool.remove(player1);
+            matchPool.remove(player2);
+
+            JSONObject responseToPlayer1 = new JSONObject();
+            responseToPlayer1.put("event", "matching-success");
+            responseToPlayer1.put("opponent_username", player2.getUsername());
+            responseToPlayer1.put("opponent_photo", player2.getPhoto());
+            users.get(player1.getId()).sendMessage(responseToPlayer1.toJSONString());
+
+            JSONObject responseToPlayer2 = new JSONObject();
+            responseToPlayer2.put("event", "matching-success");
+            responseToPlayer2.put("opponent_username", player1.getUsername());
+            responseToPlayer2.put("opponent_photo", player1.getPhoto());
+            users.get(player2.getId()).sendMessage(responseToPlayer2.toJSONString());
+        }
+    }
+
+    private void stopMatching() {
+        System.out.println("Stop matching!");
+        matchPool.remove(this.user);
     }
 }

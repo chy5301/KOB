@@ -26,11 +26,23 @@ export default {
       socket.onopen = () => {
         console.log("Connected!");
         console.log(socketUrl);
+        store.commit("updateSocket", socket);
       }
 
       socket.onmessage = message => {
         const data = JSON.parse(message.data);
         console.log(data);
+        // 如果匹配成功
+        if (data.event === "matching-success") {
+          console.log("updateOpponent")
+          store.commit("updateOpponent", {
+            username: data.opponent_username,
+            photo: data.opponent_photo,
+          });
+          setTimeout(() => {
+            store.commit("updateStatus", "playing");
+          }, 2000);
+        }
       }
 
       socket.onclose = () => {
@@ -41,6 +53,7 @@ export default {
 
     onUnmounted(() => {
       socket.close();
+      store.commit("updateStatus", "matching");
     });
   }
 }
