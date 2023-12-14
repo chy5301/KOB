@@ -1,6 +1,7 @@
 package com.kob.backend.consumer;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.kob.backend.consumer.utils.GameUtil;
 import com.kob.backend.consumer.utils.JwtAuthenticationUtil;
 import com.kob.backend.mapper.UserMapper;
 import com.kob.backend.pojo.User;
@@ -102,16 +103,21 @@ public class WebSocketServer {
             matchPool.remove(player1);
             matchPool.remove(player2);
 
+            GameUtil game = new GameUtil(16, 32);
+            game.createMap();
+
             JSONObject responseToPlayer1 = new JSONObject();
             responseToPlayer1.put("event", "matching-success");
             responseToPlayer1.put("opponent_username", player2.getUsername());
             responseToPlayer1.put("opponent_photo", player2.getPhoto());
+            responseToPlayer1.put("game_map",game.getMap());
             users.get(player1.getId()).sendMessage(responseToPlayer1.toJSONString());
 
             JSONObject responseToPlayer2 = new JSONObject();
             responseToPlayer2.put("event", "matching-success");
             responseToPlayer2.put("opponent_username", player1.getUsername());
             responseToPlayer2.put("opponent_photo", player1.getPhoto());
+            responseToPlayer2.put("game_map",game.getMap());
             users.get(player2.getId()).sendMessage(responseToPlayer2.toJSONString());
         }
     }
