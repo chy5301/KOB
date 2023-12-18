@@ -103,21 +103,30 @@ public class WebSocketServer {
             matchPool.remove(player1);
             matchPool.remove(player2);
 
-            GameUtil game = new GameUtil(16, 32);
+            GameUtil game = new GameUtil(16, 32, player1.getId(), player2.getId());
             game.createMap();
+
+            JSONObject gameInfo = new JSONObject();
+            gameInfo.put("player1_id", game.getPlayer1().getId());
+            gameInfo.put("player1_startX", game.getPlayer1().getStartX());
+            gameInfo.put("player1_startY", game.getPlayer1().getStartY());
+            gameInfo.put("player2_id", game.getPlayer2().getId());
+            gameInfo.put("player2_startX", game.getPlayer2().getStartX());
+            gameInfo.put("player2_startY", game.getPlayer2().getStartY());
+            gameInfo.put("game_map", game.getMap());
 
             JSONObject responseToPlayer1 = new JSONObject();
             responseToPlayer1.put("event", "matching-success");
             responseToPlayer1.put("opponent_username", player2.getUsername());
             responseToPlayer1.put("opponent_photo", player2.getPhoto());
-            responseToPlayer1.put("game_map",game.getMap());
+            responseToPlayer1.put("game_info", gameInfo);
             users.get(player1.getId()).sendMessage(responseToPlayer1.toJSONString());
 
             JSONObject responseToPlayer2 = new JSONObject();
             responseToPlayer2.put("event", "matching-success");
             responseToPlayer2.put("opponent_username", player1.getUsername());
             responseToPlayer2.put("opponent_photo", player1.getPhoto());
-            responseToPlayer2.put("game_map",game.getMap());
+            responseToPlayer2.put("game_info", gameInfo);
             users.get(player2.getId()).sendMessage(responseToPlayer2.toJSONString());
         }
     }
