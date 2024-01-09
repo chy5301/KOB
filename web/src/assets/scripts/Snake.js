@@ -117,10 +117,6 @@ export class Snake extends KOBGameObject {
         // 每个cell向后复制并移动一位，这样就多出了一个头来
         for (let i = cellCount; i > 0; i--)
             this.cells[i] = JSON.parse(JSON.stringify(this.cells[i - 1]));
-
-        // 如果蛇的下一步行动会使蛇死亡，变更状态为died
-        if (!this.gamemap.checkSnakesAlive(this.nextCell))
-            this.status = "died";
     }
 
     // 检查当前回合蛇的长度是否需要增加

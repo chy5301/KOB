@@ -12,6 +12,7 @@ export default {
         player2Id: 0,
         player2StartX: 0,
         player2StartY: 0,
+        gameObject: null,
     },
     getters: {},
     mutations: {
@@ -33,6 +34,9 @@ export default {
             state.player2Id = gameInfo.player2_id;
             state.player2StartX = gameInfo.player2_startX;
             state.player2StartY = gameInfo.player2_startY;
+        },
+        updateGameObject(state, gameObject) {
+            state.gameObject = gameObject;
         }
     },
     actions: {},

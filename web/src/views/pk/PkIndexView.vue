@@ -43,6 +43,24 @@ export default {
             store.commit("updateStatus", "playing");
           }, 2000);
           store.commit("updateGame", data.game_info);
+        } else if (data.event === "move") {
+          console.log(data);
+          const game = store.state.pk.gameObject;
+          const [snake1, snake2] = game.snakes;
+          snake1.setDirection(data.player1_direction);
+          snake2.setDirection(data.player2_direction);
+        } else if (data.event === "result") {
+          console.log(data);
+          const game = store.state.pk.gameObject;
+          const [snake1, snake2] = game.snakes;
+
+          // 分别判断两条蛇是否死亡
+          if (data.loser === "all" || data.loser === "player1") {
+            snake1.status = "died";
+          }
+          if (data.loser === "all" || data.loser === "player2") {
+            snake2.status = "died";
+          }
         }
       }
 

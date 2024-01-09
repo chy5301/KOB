@@ -21,10 +21,11 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class WebSocketServer {
 
     // ConcurrentHashMap是一个线程安全的HashMap，用于将用户ID映射到WebSocketServer实例
-    private static final ConcurrentHashMap<Integer, WebSocketServer> users = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<Integer, WebSocketServer> users = new ConcurrentHashMap<>();
     // CopyOnWriteArraySet是一个线程安全Set，作为匹配池
     private static final CopyOnWriteArraySet<User> matchPool = new CopyOnWriteArraySet<>();
     private User user;
+    private GameUtil game = null;
     private Session session = null;
     private static UserMapper userMapper;
 
@@ -73,6 +74,8 @@ public class WebSocketServer {
             startMatching();
         } else if ("stop-matching".equals(event)) {
             stopMatching();
+        } else if ("move".equals(event)) {
+            move(data.getInteger("direction"));
         }
     }
 
@@ -105,6 +108,10 @@ public class WebSocketServer {
 
             GameUtil game = new GameUtil(16, 32, player1.getId(), player2.getId());
             game.createMap();
+            users.get(player1.getId()).game = game;
+            users.get(player2.getId()).game = game;
+
+            game.start();
 
             JSONObject gameInfo = new JSONObject();
             gameInfo.put("player1_id", game.getPlayer1().getId());
@@ -134,5 +141,15 @@ public class WebSocketServer {
     private void stopMatching() {
         System.out.println("Stop matching!");
         matchPool.remove(this.user);
+    }
+
+    // 接收move消息后设置对应玩家的下一步移动方向
+    private void move(int direction) {
+        // 如果当前WebSocket链接的是player1/player2，设置对应玩家的nextStep
+        if (game.getPlayer1().getId().equals(user.getId())) {
+            game.setPlayer1NextStep(direction);
+        } else if (game.getPlayer2().getId().equals(user.getId())) {
+            game.setPlayer2NextStep(direction);
+        }
     }
 }

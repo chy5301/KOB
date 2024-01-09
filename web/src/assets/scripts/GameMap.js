@@ -39,34 +39,28 @@ export class GameMap extends KOBGameObject {
 
     addListeningEvents() {
         this.ctx.canvas.focus();
-
-        const [snake0, snake1] = this.snakes;
         this.ctx.canvas.addEventListener("keydown", e => {
+            let direction = -1;
             switch (e.key) {
                 case 'w':
-                    snake0.setDirection(0);
+                    direction = 0;
                     break;
                 case 'd':
-                    snake0.setDirection(1);
+                    direction = 1;
                     break;
                 case 's':
-                    snake0.setDirection(2);
+                    direction = 2;
                     break;
                 case 'a':
-                    snake0.setDirection(3);
+                    direction = 3;
                     break;
-                case 'ArrowUp':
-                    snake1.setDirection(0);
-                    break;
-                case 'ArrowRight':
-                    snake1.setDirection(1);
-                    break;
-                case 'ArrowDown':
-                    snake1.setDirection(2);
-                    break;
-                case 'ArrowLeft':
-                    snake1.setDirection(3);
-                    break;
+            }
+
+            if (direction >= 0) {
+                this.store.state.pk.socket.send(JSON.stringify({
+                    event: "move",
+                    direction: direction,
+                }));
             }
         });
     }
