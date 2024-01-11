@@ -15,7 +15,7 @@ public class Player {
     private Integer id;
     private Integer startX;
     private Integer startY;
-    private List<Integer> steps;
+    private Integer steps;
     private List<Cell> cells;
 
     // 初始化 Player 并将起始位置加入 cells
@@ -23,20 +23,17 @@ public class Player {
         this.id = id;
         this.startX = startX;
         this.startY = startY;
-        steps = new ArrayList<>();
+        steps = 0;
         cells = new LinkedList<>();
         // 将起始位置加入 cells
         cells.add(new Cell(startX, startY));
     }
 
-    // 将下一步操作更新到 steps 和 cells
+    // 更新 steps 和 cells
     public void nextStep(Integer nextStep) {
-        // 将下一步操作添加到 steps
-        steps.add(nextStep);
-        // 更新 cells
         int[] dx = {-1, 0, 1, 0}, dy = {0, 1, 0, -1};
         cells.add(new Cell(cells.getLast().x + dx[nextStep], cells.getLast().y + dy[nextStep]));
-        if (checkTailNotIncreasing(steps.size()))
+        if (checkTailNotIncreasing(++steps))
             cells.removeFirst();
     }
 
