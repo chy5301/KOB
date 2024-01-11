@@ -4,7 +4,6 @@ import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.consumer.WebSocketServer;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -22,8 +21,8 @@ public class GameUtil extends Thread {
 
     public GameUtil(Integer size, Integer innerWallsCount, Integer player1Id, Integer player2Id) {
         gameMap = new GameMapUtil(size, innerWallsCount);
-        player1 = new Player(player1Id, size - 2, 1, new ArrayList<>());
-        player2 = new Player(player2Id, 1, size - 2, new ArrayList<>());
+        player1 = new Player(player1Id, size - 2, 1);
+        player2 = new Player(player2Id, 1, size - 2);
     }
 
     public void createMap() {
@@ -111,7 +110,6 @@ public class GameUtil extends Thread {
             else
                 loser = "player2";
         }
-
     }
 
     // 广播信息的辅助函数
@@ -160,8 +158,8 @@ public class GameUtil extends Thread {
                 try {
                     // 如果两名玩家的下一步输入都读到了
                     if (player1NextStep != null && player2NextStep != null) {
-                        player1.getSteps().add(player1NextStep);
-                        player2.getSteps().add(player2NextStep);
+                        player1.nextStep(player1NextStep);
+                        player2.nextStep(player2NextStep);
                         return true;
                     }
                 } finally {
