@@ -3,6 +3,7 @@ package com.kob.backend.consumer;
 import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.consumer.utils.GameUtil;
 import com.kob.backend.consumer.utils.JwtAuthenticationUtil;
+import com.kob.backend.mapper.RecordMapper;
 import com.kob.backend.mapper.UserMapper;
 import com.kob.backend.pojo.User;
 import jakarta.websocket.*;
@@ -28,10 +29,16 @@ public class WebSocketServer {
     private GameUtil game = null;
     private Session session = null;
     private static UserMapper userMapper;
+    public static RecordMapper recordMapper;
 
     @Autowired
     public void setUserMapper(UserMapper userMapper) {
         WebSocketServer.userMapper = userMapper;
+    }
+
+    @Autowired
+    public void setRecordMapper(RecordMapper recordMapper) {
+        WebSocketServer.recordMapper = recordMapper;
     }
 
     @OnOpen

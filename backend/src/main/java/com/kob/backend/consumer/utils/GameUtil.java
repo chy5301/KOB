@@ -1,9 +1,12 @@
 package com.kob.backend.consumer.utils;
 
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.consumer.WebSocketServer;
+import com.kob.backend.pojo.Record;
 import lombok.Getter;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -134,11 +137,34 @@ public class GameUtil extends Thread {
         }
     }
 
+    // 将对局记录存储到数据库
+    private void saveGameRecord() {
+        Record gameRecord = new Record(
+                null,
+                player1.getId(),
+                player1.getStartX(),
+                player1.getStartY(),
+                player2.getId(),
+                player2.getStartX(),
+                player2.getStartY(),
+                // 将 ArrayList<Integer> 转化为 String
+                JSON.toJSONString(player1.getSteps()),
+                JSON.toJSONString(player2.getSteps()),
+                // 将 int[][] 转化为 String
+                JSON.toJSONString(gameMap.getGameMapArray()),
+                loser,
+                new Date()
+        );
+
+        WebSocketServer.recordMapper.insert(gameRecord);
+    }
+
     // 向两个Client公布结果
     private void sendResult() {
         JSONObject response = new JSONObject();
         response.put("event", "result");
         response.put("loser", loser);
+        saveGameRecord();
         sendMessage(response.toJSONString());
     }
 
