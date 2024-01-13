@@ -1,6 +1,6 @@
 export default {
     state: {
-        // 状态：matching = 匹配，playing = 对战
+        // matching: 匹配，playing: 对战
         status: "matching",
         socket: null,
         opponentUsername: "",
@@ -13,6 +13,8 @@ export default {
         player2StartX: 0,
         player2StartY: 0,
         gameObject: null,
+        // none，all，player1，player2
+        loser: "none",
     },
     getters: {},
     mutations: {
@@ -37,7 +39,10 @@ export default {
         },
         updateGameObject(state, gameObject) {
             state.gameObject = gameObject;
-        }
+        },
+        updateLoser(state, loser) {
+            state.loser = loser;
+        },
     },
     actions: {},
     modules: {}

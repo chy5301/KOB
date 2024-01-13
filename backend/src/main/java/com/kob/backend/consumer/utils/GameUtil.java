@@ -15,7 +15,7 @@ public class GameUtil extends Thread {
     private final Player player2;
     private Integer player1NextStep = null;
     private Integer player2NextStep = null;
-    private final ReentrantLock reentrantLock = new ReentrantLock();
+    private final ReentrantLock lock = new ReentrantLock();
     private String status = "playing";  // playing:游戏正在进行，finished:游戏结束
     private String loser = "";    // all:平局，player1:player1输，player2:player2输
 
@@ -34,20 +34,20 @@ public class GameUtil extends Thread {
     }
 
     public void setPlayer1NextStep(Integer player1NextStep) {
-        reentrantLock.lock();
+        lock.lock();
         try {
             this.player1NextStep = player1NextStep;
         } finally {
-            reentrantLock.unlock();
+            lock.unlock();
         }
     }
 
     public void setPlayer2NextStep(Integer player2NextStep) {
-        reentrantLock.lock();
+        lock.lock();
         try {
             this.player2NextStep = player2NextStep;
         } finally {
-            reentrantLock.unlock();
+            lock.unlock();
         }
     }
 
@@ -65,7 +65,7 @@ public class GameUtil extends Thread {
                 }
             } else {    // 如果没有获取到两条蛇的输入，则游戏结束，没有输入的玩家判输
                 status = "finished";
-                reentrantLock.lock();
+                lock.lock();
                 try {
                     if (player1NextStep == null && player2NextStep == null) {
                         loser = "all";
@@ -75,7 +75,7 @@ public class GameUtil extends Thread {
                         loser = "player2";
                     }
                 } finally {
-                    reentrantLock.unlock();
+                    lock.unlock();
                 }
                 sendResult();
                 break;
@@ -121,7 +121,7 @@ public class GameUtil extends Thread {
     // 向两个Client发送移动信息
     private void sendMove() {
         // 由于此处需要读入两名玩家的nextstep，所以需要加锁
-        reentrantLock.lock();
+        lock.lock();
         try {
             JSONObject response = new JSONObject();
             response.put("event", "move");
@@ -130,7 +130,7 @@ public class GameUtil extends Thread {
             player1NextStep = player2NextStep = null;
             sendMessage(response.toJSONString());
         } finally {
-            reentrantLock.unlock();
+            lock.unlock();
         }
     }
 
@@ -154,7 +154,7 @@ public class GameUtil extends Thread {
         for (int i = 0; i < 50; i++) {
             try {
                 Thread.sleep(100);
-                reentrantLock.lock();
+                lock.lock();
                 try {
                     // 如果两名玩家的下一步输入都读到了
                     if (player1NextStep != null && player2NextStep != null) {
@@ -163,7 +163,7 @@ public class GameUtil extends Thread {
                         return true;
                     }
                 } finally {
-                    reentrantLock.unlock();
+                    lock.unlock();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

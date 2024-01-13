@@ -1,6 +1,7 @@
 <script>
 import PlayGround from "@/components/PlayGround.vue"
 import MatchingComponent from "@/components/MatchingComponent.vue"
+import ResultBoard from "@/components/ResultBoard.vue"
 import {onMounted} from "vue";
 import {onUnmounted} from "vue";
 import {useStore} from "vuex";
@@ -9,6 +10,7 @@ export default {
   components: {
     PlayGround,
     MatchingComponent,
+    ResultBoard,
   },
   setup() {
     const store = useStore();
@@ -61,6 +63,8 @@ export default {
           if (data.loser === "all" || data.loser === "player2") {
             snake2.status = "died";
           }
+          console.log("player1Id: " + store.state.pk.player1Id + " player2Id: " + store.state.pk.player2Id + " userId: " + store.state.user.id);
+          store.commit("updateLoser", data.loser);
         }
       }
 
@@ -81,6 +85,7 @@ export default {
 <template>
   <PlayGround v-if="$store.state.pk.status === 'playing'"/>
   <MatchingComponent v-if="$store.state.pk.status ==='matching'"/>
+  <ResultBoard v-if="$store.state.pk.loser !=='none'"/>
 </template>
 
 <style scoped>
