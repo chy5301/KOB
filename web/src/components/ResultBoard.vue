@@ -1,5 +1,22 @@
 <script>
+import {useStore} from "vuex";
 
+export default {
+  setup() {
+    const store = useStore();
+    const restart = () => {
+      store.commit("updateStatus", "matching");
+      store.commit("updateLoser", "none");
+      store.commit("updateOpponent", {
+        username: "我的对手",
+        photo: "https://cdn.acwing.com/media/article/image/2022/08/09/1_1db2488f17-anonymous.png",
+      })
+    }
+    return {
+      restart
+    };
+  }
+}
 </script>
 
 <template>
@@ -15,16 +32,11 @@
          v-else-if="$store.state.pk.loser==='player2'&&$store.state.pk.player2Id===parseInt($store.state.user.id)">
       你输了
     </div>
-    <div class="result-board-text"
-         v-else-if="$store.state.pk.loser==='player2'&&$store.state.pk.player1Id===parseInt($store.state.user.id)">
-      你赢了
-    </div>
-    <div class="result-board-text"
-         v-else-if="$store.state.pk.loser==='player1'&&$store.state.pk.player2Id===parseInt($store.state.user.id)">
+    <div class="result-board-text" v-else>
       你赢了
     </div>
     <div class="result-board-button">
-      <button type="button" class="btn btn-primary btn-lg">
+      <button @click="restart" type="button" class="btn btn-primary btn-lg">
         重新开始
       </button>
     </div>
