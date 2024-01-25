@@ -1,7 +1,5 @@
 plugins {
     java
-    // id("org.springframework.boot") version "3.1.5"
-    // id("io.spring.dependency-management") version "1.1.3"
     id("org.springframework.boot") version "3.2.0"
     id("io.spring.dependency-management") version "1.1.4"
 }
@@ -37,11 +35,7 @@ dependencies {
     implementation("com.mysql:mysql-connector-j:8.2.0")
 
     // https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-boot-starter
-    // implementation("com.baomidou:mybatis-plus-boot-starter:3.5.4.1")
-    implementation("com.baomidou:mybatis-plus-boot-starter:3.5.4.1") {
-        // 使用 exclude 方法排除传递依赖项
-        exclude(group = "org.mybatis", module = "mybatis-spring")
-    }
+    implementation("com.baomidou:mybatis-plus-boot-starter:3.5.4.1")
     implementation("org.mybatis:mybatis-spring:3.0.3")
     // https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-generator
     implementation("com.baomidou:mybatis-plus-generator:3.5.4.1")

@@ -26,7 +26,7 @@ export default {
       clickMatchButton,
     }
   }
-}
+} 
 </script>
 
 <template>
