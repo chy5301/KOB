@@ -110,7 +110,7 @@ public class WebSocketServer {
     }
 
     // 初始化游戏
-    private void startGame(Integer player1Id, Integer player2Id) {
+    public static void startGame(Integer player1Id, Integer player2Id) {
         User player1 = userMapper.selectById(player1Id);
         User player2 = userMapper.selectById(player2Id);
 
