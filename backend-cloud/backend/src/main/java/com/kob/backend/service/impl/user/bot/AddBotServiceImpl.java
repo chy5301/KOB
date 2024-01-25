@@ -62,7 +62,7 @@ public class AddBotServiceImpl implements AddBotService {
         }
 
         Date currentTime = new Date();
-        Bot bot = new Bot(null, user.getId(), title, description, content, 1500, currentTime, currentTime);
+        Bot bot = new Bot(null, user.getId(), title, description, content, currentTime, currentTime);
         botMapper.insert(bot);
         returnInfo.put("status_message","Success");
         return returnInfo;

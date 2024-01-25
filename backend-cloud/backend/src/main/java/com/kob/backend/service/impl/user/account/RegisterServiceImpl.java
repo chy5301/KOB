@@ -23,8 +23,8 @@ public class RegisterServiceImpl implements RegisterService {
     /**
      * 注册新用户
      *
-     * @param username 用户名
-     * @param password 密码
+     * @param username        用户名
+     * @param password        密码
      * @param confirmPassword 确认密码
      * @return 注册结果信息
      */
@@ -87,7 +87,7 @@ public class RegisterServiceImpl implements RegisterService {
 
         String encodedPassword = passwordEncoder.encode(password); // 编码密码
         String photoUrl = "https://cdn.acwing.com/media/user/profile/photo/319703_lg_e70ad07d8d.png"; // 用户头像URL
-        User user = new User(null, username, encodedPassword, photoUrl); // 创建新用户对象
+        User user = new User(null, username, encodedPassword, photoUrl, 1500); // 创建新用户对象
         userMapper.insert(user); // 插入用户数据到数据库
         returnInfo.put("status_message", "Success"); // 设置状态信息为成功
         return returnInfo; // 返回结果信息

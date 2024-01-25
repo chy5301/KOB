@@ -83,7 +83,6 @@ public class UpdateBotServiceImpl implements UpdateBotService {
                 title,
                 description,
                 content,
-                bot.getRating(),
                 bot.getCreateTime(),
                 currentTime
         );

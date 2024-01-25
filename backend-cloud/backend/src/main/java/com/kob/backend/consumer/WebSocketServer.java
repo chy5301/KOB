@@ -11,6 +11,9 @@ import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -20,16 +23,16 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @Component
 @ServerEndpoint("/websocket/{token}")
 public class WebSocketServer {
-
     // ConcurrentHashMap是一个线程安全的HashMap，用于将用户ID映射到WebSocketServer实例
     public static final ConcurrentHashMap<Integer, WebSocketServer> users = new ConcurrentHashMap<>();
-    // CopyOnWriteArraySet是一个线程安全Set，作为匹配池
-    private static final CopyOnWriteArraySet<User> matchPool = new CopyOnWriteArraySet<>();
     private User user;
     private GameUtil game = null;
     private Session session = null;
     private static UserMapper userMapper;
     public static RecordMapper recordMapper;
+    public static RestTemplate restTemplate;
+    private static final String addPlayerUrl = "http://localhost:3001/player/add";
+    private static final String removePlayerUrl = "http://localhost:3001/player/remove";
 
     @Autowired
     public void setUserMapper(UserMapper userMapper) {
@@ -39,6 +42,11 @@ public class WebSocketServer {
     @Autowired
     public void setRecordMapper(RecordMapper recordMapper) {
         WebSocketServer.recordMapper = recordMapper;
+    }
+
+    @Autowired
+    public void setRestTemplate(RestTemplate restTemplate) {
+        WebSocketServer.restTemplate = restTemplate;
     }
 
     @OnOpen
@@ -65,7 +73,6 @@ public class WebSocketServer {
 
         if (this.user != null) {
             users.remove(this.user.getId());
-            matchPool.remove(this.user);
         }
     }
 
@@ -102,59 +109,65 @@ public class WebSocketServer {
         }
     }
 
+    // 初始化游戏
+    private void startGame(Integer player1Id, Integer player2Id) {
+        User player1 = userMapper.selectById(player1Id);
+        User player2 = userMapper.selectById(player2Id);
+
+        // 初始化游戏
+        GameUtil game = new GameUtil(16, 32, player1.getId(), player2.getId());
+        game.createMap();
+        users.get(player1.getId()).game = game;
+        users.get(player2.getId()).game = game;
+
+        // 启动游戏线程
+        game.start();
+
+        // 初始化游戏信息
+        JSONObject gameInfo = new JSONObject();
+        gameInfo.put("player1_id", game.getPlayer1().getId());
+        gameInfo.put("player1_startX", game.getPlayer1().getStartX());
+        gameInfo.put("player1_startY", game.getPlayer1().getStartY());
+        gameInfo.put("player2_id", game.getPlayer2().getId());
+        gameInfo.put("player2_startX", game.getPlayer2().getStartX());
+        gameInfo.put("player2_startY", game.getPlayer2().getStartY());
+        gameInfo.put("game_map", game.getMap());
+
+        // 将游戏信息和匹配成功信息发送给 client1
+        JSONObject responseToPlayer1 = new JSONObject();
+        responseToPlayer1.put("event", "matching-success");
+        responseToPlayer1.put("opponent_username", player2.getUsername());
+        responseToPlayer1.put("opponent_photo", player2.getPhoto());
+        responseToPlayer1.put("game_info", gameInfo);
+        users.get(player1.getId()).sendMessage(responseToPlayer1.toJSONString());
+
+        // 将游戏信息和匹配成功信息发送给 client2
+        JSONObject responseToPlayer2 = new JSONObject();
+        responseToPlayer2.put("event", "matching-success");
+        responseToPlayer2.put("opponent_username", player1.getUsername());
+        responseToPlayer2.put("opponent_photo", player1.getPhoto());
+        responseToPlayer2.put("game_info", gameInfo);
+        users.get(player2.getId()).sendMessage(responseToPlayer2.toJSONString());
+    }
+
+    // 开始匹配
     private void startMatching() {
         System.out.println("Start matching!");
-        matchPool.add(this.user);
-
-        // 临时调试用，后续换成微服务
-        while (matchPool.size() >= 2) {
-            Iterator<User> iterator = matchPool.iterator();
-            User player1 = iterator.next();
-            User player2 = iterator.next();
-            matchPool.remove(player1);
-            matchPool.remove(player2);
-
-            // 初始化游戏
-            GameUtil game = new GameUtil(16, 32, player1.getId(), player2.getId());
-            game.createMap();
-            users.get(player1.getId()).game = game;
-            users.get(player2.getId()).game = game;
-
-            // 启动游戏线程
-            game.start();
-
-            // 初始化游戏信息
-            JSONObject gameInfo = new JSONObject();
-            gameInfo.put("player1_id", game.getPlayer1().getId());
-            gameInfo.put("player1_startX", game.getPlayer1().getStartX());
-            gameInfo.put("player1_startY", game.getPlayer1().getStartY());
-            gameInfo.put("player2_id", game.getPlayer2().getId());
-            gameInfo.put("player2_startX", game.getPlayer2().getStartX());
-            gameInfo.put("player2_startY", game.getPlayer2().getStartY());
-            gameInfo.put("game_map", game.getMap());
-
-            // 将游戏信息和匹配成功信息发送给 client1
-            JSONObject responseToPlayer1 = new JSONObject();
-            responseToPlayer1.put("event", "matching-success");
-            responseToPlayer1.put("opponent_username", player2.getUsername());
-            responseToPlayer1.put("opponent_photo", player2.getPhoto());
-            responseToPlayer1.put("game_info", gameInfo);
-            users.get(player1.getId()).sendMessage(responseToPlayer1.toJSONString());
-
-            // 将游戏信息和匹配成功信息发送给 client2
-            JSONObject responseToPlayer2 = new JSONObject();
-            responseToPlayer2.put("event", "matching-success");
-            responseToPlayer2.put("opponent_username", player1.getUsername());
-            responseToPlayer2.put("opponent_photo", player1.getPhoto());
-            responseToPlayer2.put("game_info", gameInfo);
-            users.get(player2.getId()).sendMessage(responseToPlayer2.toJSONString());
-        }
+        MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
+        data.add("user_id", this.user.getId().toString());
+        data.add("rating", this.user.getRating().toString());
+        // 向matching-system发送addPlayer的post请求
+        // RestTemplate.postForObject()的第一个参数是url，第二个参数是发送的data，第三个参数是返回值的类型
+        restTemplate.postForObject(addPlayerUrl, data, String.class);
     }
 
     // 停止匹配
     private void stopMatching() {
         System.out.println("Stop matching!");
-        matchPool.remove(this.user);
+        MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
+        data.add("user_id", this.user.getId().toString());
+        // 向 matching-system 发送 removePlayer 的 post 请求
+        restTemplate.postForObject(removePlayerUrl, data, String.class);
     }
 
     // 接收move消息后设置对应玩家的下一步移动方向
