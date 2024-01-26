@@ -25,17 +25,21 @@ import java.io.IOException;
  */
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
+    private final UserMapper userMapper;
+
     @Autowired
-    private UserMapper userMapper;
+    public JwtAuthenticationTokenFilter(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
 
     /**
      * 过滤Token并进行认证
      *
-     * @param request  请求对象
-     * @param response 响应对象
+     * @param request     请求对象
+     * @param response    响应对象
      * @param filterChain 过滤器链
      * @throws ServletException Servlet异常
-     * @throws IOException IO异常
+     * @throws IOException      IO异常
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {

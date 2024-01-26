@@ -10,8 +10,12 @@ import java.util.Map;
 
 @RestController
 public class LoginController {
+    private final LoginService loginService;
+
     @Autowired
-    private LoginService loginService;
+    public LoginController(LoginService loginService) {
+        this.loginService = loginService;
+    }
 
     @PostMapping("/user/account/token")
     public Map<String, String> getToken(@RequestParam Map<String, String> params) {

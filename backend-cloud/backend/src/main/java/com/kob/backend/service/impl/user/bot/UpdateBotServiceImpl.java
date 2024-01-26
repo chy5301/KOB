@@ -15,12 +15,16 @@ import java.util.Objects;
 
 @Service
 public class UpdateBotServiceImpl implements UpdateBotService {
+    private final BotMapper botMapper;
+
     @Autowired
-    private BotMapper botMapper;
+    public UpdateBotServiceImpl(BotMapper botMapper) {
+        this.botMapper = botMapper;
+    }
 
     @Override
     public Map<String, String> updateBot(Map<String, String> data) {
-        User user= UserUtil.getLoggedinUser();
+        User user = UserUtil.getLoggedinUser();
 
         int botId = Integer.parseInt(data.get("bot_id"));
         String title = data.get("title");

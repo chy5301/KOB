@@ -14,8 +14,12 @@ import java.util.Map;
 
 @Service
 public class AddBotServiceImpl implements AddBotService {
+    private final BotMapper botMapper;
+
     @Autowired
-    private BotMapper botMapper;
+    public AddBotServiceImpl(BotMapper botMapper) {
+        this.botMapper = botMapper;
+    }
 
     @Override
     public Map<String, String> addBot(Map<String, String> data) {

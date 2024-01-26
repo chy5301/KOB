@@ -15,8 +15,12 @@ import java.util.Map;
 
 @Service
 public class LoginServiceImpl implements LoginService {
+    private final AuthenticationManager authenticationManager;
+
     @Autowired
-    private AuthenticationManager authenticationManager;
+    public LoginServiceImpl(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
 
     /**
      * 获取Token

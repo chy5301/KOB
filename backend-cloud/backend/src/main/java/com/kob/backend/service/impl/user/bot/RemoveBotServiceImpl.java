@@ -14,12 +14,16 @@ import java.util.Objects;
 
 @Service
 public class RemoveBotServiceImpl implements RemoveBotService {
+    private final BotMapper botMapper;
+
     @Autowired
-    private BotMapper botMapper;
+    public RemoveBotServiceImpl(BotMapper botMapper) {
+        this.botMapper = botMapper;
+    }
 
     @Override
     public Map<String, String> removeBot(Map<String, String> data) {
-        User user= UserUtil.getLoggedinUser();
+        User user = UserUtil.getLoggedinUser();
 
         int botId = Integer.parseInt(data.get("bot_id"));
         Bot bot = botMapper.selectById(botId);

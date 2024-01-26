@@ -27,8 +27,12 @@ import static org.springframework.security.authorization.AuthorizationManagers.a
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    private final JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+
     @Autowired
-    private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+    public SecurityConfig(JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter) {
+        this.jwtAuthenticationTokenFilter = jwtAuthenticationTokenFilter;
+    }
 
     /**
      * 实现密码编码器，用于对密码进行加密和验证

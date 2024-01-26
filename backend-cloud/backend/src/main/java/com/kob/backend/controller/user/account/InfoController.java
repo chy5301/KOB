@@ -9,8 +9,12 @@ import java.util.Map;
 
 @RestController
 public class InfoController {
+    private final InfoService infoService;
+
     @Autowired
-    private InfoService infoService;
+    public InfoController(InfoService infoService) {
+        this.infoService = infoService;
+    }
 
     @GetMapping("/user/account/info")
     public Map<String, String> getInfo() {

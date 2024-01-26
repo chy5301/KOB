@@ -14,11 +14,14 @@ import java.util.Map;
 
 @Service
 public class RegisterServiceImpl implements RegisterService {
-    @Autowired
-    private UserMapper userMapper; // 用户数据访问对象
+    private final UserMapper userMapper; // 用户数据访问对象
+    private final PasswordEncoder passwordEncoder; // 密码编码器
 
     @Autowired
-    private PasswordEncoder passwordEncoder; // 密码编码器
+    public RegisterServiceImpl(UserMapper userMapper, PasswordEncoder passwordEncoder) {
+        this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     /**
      * 注册新用户

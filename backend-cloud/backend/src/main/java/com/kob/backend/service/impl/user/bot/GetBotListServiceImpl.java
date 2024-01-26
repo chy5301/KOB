@@ -15,12 +15,16 @@ import java.util.Map;
 
 @Service
 public class GetBotListServiceImpl implements GetBotListService {
+    private final BotMapper botMapper;
+
     @Autowired
-    private BotMapper botMapper;
+    public GetBotListServiceImpl(BotMapper botMapper) {
+        this.botMapper = botMapper;
+    }
 
     @Override
     public Map<String, Object> getBotList() {
-        User user= UserUtil.getLoggedinUser();
+        User user = UserUtil.getLoggedinUser();
 
         Map<String, Object> returnInfo = new HashMap<>();
 

@@ -8,9 +8,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 @RestController
 public class GetBotListController {
+    private final GetBotListService getBotListService;
 
     @Autowired
-    private GetBotListService getBotListService;
+    public GetBotListController(GetBotListService getBotListService) {
+        this.getBotListService = getBotListService;
+    }
 
     @GetMapping("/user/bot/getlist")
     public Map<String, Object> getBotList() {

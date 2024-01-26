@@ -10,8 +10,12 @@ import java.util.Map;
 
 @RestController
 public class RemoveBotController {
+    private final RemoveBotService removeBotService;
+
     @Autowired
-    private RemoveBotService removeBotService;
+    public RemoveBotController(RemoveBotService removeBotService) {
+        this.removeBotService = removeBotService;
+    }
 
     @PostMapping("/user/bot/remove")
     public Map<String, String> removeBot(@RequestParam Map<String, String> params) {

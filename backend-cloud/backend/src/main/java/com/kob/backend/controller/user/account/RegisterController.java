@@ -10,8 +10,12 @@ import java.util.Map;
 
 @RestController
 public class RegisterController {
+    private final RegisterService registerService;
+
     @Autowired
-    private RegisterService registerService;
+    public RegisterController(RegisterService registerService) {
+        this.registerService = registerService;
+    }
 
     @PostMapping("/user/account/register")
     public Map<String, String> register(@RequestParam Map<String, String> params) {

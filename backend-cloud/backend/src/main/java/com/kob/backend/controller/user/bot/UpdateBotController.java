@@ -10,8 +10,12 @@ import java.util.Map;
 
 @RestController
 public class UpdateBotController {
+    private final UpdateBotService updateBotService;
+
     @Autowired
-    private UpdateBotService updateBotService;
+    public UpdateBotController(UpdateBotService updateBotService) {
+        this.updateBotService = updateBotService;
+    }
 
     @PostMapping("/user/bot/update")
     public Map<String, String> updateBot(@RequestParam Map<String, String> params) {
