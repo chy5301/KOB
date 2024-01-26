@@ -77,6 +77,13 @@ public class MatchingPoolUtil extends Thread {
                     continue;
                 Player player1 = matchingPool.get(i);
                 Player player2 = matchingPool.get(j);
+
+                // 防止自己匹配到自己，遇到相同id的匹配请求保留等待时间更短的请求
+                if (player1.getUserId().equals(player2.getUserId())) {
+                    usedPlayers[i] = true;
+                    continue;
+                }
+
                 if (checkRatingMatched(player1, player2)) {
                     usedPlayers[i] = usedPlayers[j] = true;
                     sendResult(player1, player2);
@@ -95,7 +102,7 @@ public class MatchingPoolUtil extends Thread {
         matchingPool = newPlayerList;
     }
 
-    // 像backend发送匹配结果
+    // 向backend发送匹配结果
     private void sendResult(Player player1, Player player2) {
         // 输出调试信息
         System.out.println("Send result: " + player1 + " " + player2);

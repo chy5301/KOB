@@ -10,15 +10,14 @@ import jakarta.websocket.*;
 import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 @Component
 @ServerEndpoint("/websocket/{token}")
@@ -31,8 +30,20 @@ public class WebSocketServer {
     private static UserMapper userMapper;
     public static RecordMapper recordMapper;
     public static RestTemplate restTemplate;
-    private static final String addPlayerUrl = "http://localhost:3001/player/add";
-    private static final String removePlayerUrl = "http://localhost:3001/player/remove";
+
+    // 常量
+    private static final Integer mapSize;
+    private static final Integer innerWallsCount;
+    private static final String addPlayerUrl;
+    private static final String removePlayerUrl;
+
+    // 静态初始化块
+    static {
+        mapSize = 16;
+        innerWallsCount = 32;
+        addPlayerUrl = "http://localhost:3001/player/add";
+        removePlayerUrl = "http://localhost:3001/player/remove";
+    }
 
     @Autowired
     public void setUserMapper(UserMapper userMapper) {
@@ -59,7 +70,6 @@ public class WebSocketServer {
 
         if (this.user != null) {
             users.put(userId, this);
-            // System.out.println("UserId = " + user.getId());
         } else {
             this.session.close();
         }
@@ -72,6 +82,7 @@ public class WebSocketServer {
         System.out.println("UserId = " + user.getId());
 
         if (this.user != null) {
+            stopMatching();
             users.remove(this.user.getId());
         }
     }
@@ -115,7 +126,7 @@ public class WebSocketServer {
         User player2 = userMapper.selectById(player2Id);
 
         // 初始化游戏
-        GameUtil game = new GameUtil(16, 32, player1.getId(), player2.getId());
+        GameUtil game = new GameUtil(mapSize, innerWallsCount, player1.getId(), player2.getId());
         game.createMap();
         users.get(player1.getId()).game = game;
         users.get(player2.getId()).game = game;
