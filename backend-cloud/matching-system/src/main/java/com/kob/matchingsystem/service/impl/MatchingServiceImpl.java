@@ -17,10 +17,10 @@ public class MatchingServiceImpl implements MatchingService {
     }
 
     @Override
-    public String addPlayer(Integer userId, Integer rating) {
+    public String addPlayer(Integer userId, Integer rating, Integer botId) {
         // 临时调试信息
         System.out.println("Add player: " + userId + " " + rating);
-        matchingPool.addPlayer(userId, rating);
+        matchingPool.addPlayer(userId, rating, botId);
         return "Add player success";
     }
 

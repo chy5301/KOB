@@ -3,6 +3,7 @@ package com.kob.backend.consumer.utils;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.consumer.WebSocketServer;
+import com.kob.backend.pojo.Bot;
 import com.kob.backend.pojo.Record;
 import lombok.Getter;
 
@@ -22,10 +23,22 @@ public class GameUtil extends Thread {
     private String status = "playing";  // playing:游戏正在进行，finished:游戏结束
     private String loser = "";    // all:平局，player1:player1输，player2:player2输
 
-    public GameUtil(Integer size, Integer innerWallsCount, Integer player1Id, Integer player2Id) {
+    public GameUtil(Integer size, Integer innerWallsCount, Integer player1Id, Bot bot1, Integer player2Id, Bot bot2) {
         gameMap = new GameMapUtil(size, innerWallsCount);
-        player1 = new Player(player1Id, size - 2, 1);
-        player2 = new Player(player2Id, 1, size - 2);
+
+        Integer bot1Id = -1, bot2Id = -1;
+        String bot1Code = "", bot2Code = "";
+        if (bot1 != null) {
+            bot1Id = bot1.getId();
+            bot1Code = bot1.getContent();
+        }
+        if (bot2 != null) {
+            bot2Id = bot2.getId();
+            bot2Code = bot2.getContent();
+        }
+
+        player1 = new Player(player1Id, bot1Id, bot1Code, size - 2, 1);
+        player2 = new Player(player2Id, bot2Id, bot2Code, 1, size - 2);
     }
 
     public void createMap() {

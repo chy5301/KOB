@@ -3,8 +3,10 @@ package com.kob.backend.consumer;
 import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.consumer.utils.GameUtil;
 import com.kob.backend.consumer.utils.JwtAuthenticationUtil;
+import com.kob.backend.mapper.BotMapper;
 import com.kob.backend.mapper.RecordMapper;
 import com.kob.backend.mapper.UserMapper;
+import com.kob.backend.pojo.Bot;
 import com.kob.backend.pojo.User;
 import jakarta.websocket.*;
 import jakarta.websocket.server.PathParam;
@@ -27,6 +29,7 @@ public class WebSocketServer {
     private GameUtil game = null;
     private Session session = null;
     private static UserMapper userMapper;
+    private static BotMapper botMapper;
     public static RecordMapper recordMapper;
     public static RestTemplate restTemplate;
 
@@ -52,6 +55,11 @@ public class WebSocketServer {
     @Autowired
     public void setRecordMapper(RecordMapper recordMapper) {
         WebSocketServer.recordMapper = recordMapper;
+    }
+
+    @Autowired
+    public void setBotMapper(BotMapper botMapper) {
+        WebSocketServer.botMapper = botMapper;
     }
 
     @Autowired
@@ -95,7 +103,7 @@ public class WebSocketServer {
         String event = data.getString("event");
         // 注意：event可能为空，所以不要写event.equals("start-matching")
         if ("start-matching".equals(event)) {
-            startMatching();
+            startMatching(data.getInteger("bot_id"));
         } else if ("stop-matching".equals(event)) {
             stopMatching();
         } else if ("move".equals(event)) {
@@ -120,12 +128,14 @@ public class WebSocketServer {
     }
 
     // 初始化游戏
-    public static void startGame(Integer player1Id, Integer player2Id) {
+    public static void startGame(Integer player1Id, Integer player1BotId, Integer player2Id, Integer player2BotId) {
         User player1 = userMapper.selectById(player1Id);
         User player2 = userMapper.selectById(player2Id);
+        Bot bot1 = botMapper.selectById(player1BotId);
+        Bot bot2 = botMapper.selectById(player2BotId);
 
         // 初始化游戏
-        GameUtil game = new GameUtil(mapSize, innerWallsCount, player1.getId(), player2.getId());
+        GameUtil game = new GameUtil(mapSize, innerWallsCount, player1.getId(), bot1, player2.getId(), bot2);
         game.createMap();
         users.get(player1.getId()).game = game;
         users.get(player2.getId()).game = game;
@@ -161,11 +171,13 @@ public class WebSocketServer {
     }
 
     // 开始匹配
-    private void startMatching() {
+    private void startMatching(Integer botId) {
         System.out.println("Start matching!");
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add("user_id", this.user.getId().toString());
         data.add("rating", this.user.getRating().toString());
+        data.add("bot_id", botId.toString());
+        System.out.println(data);
         // 向matching-system发送addPlayer的post请求
         // RestTemplate.postForObject()的第一个参数是url，第二个参数是发送的data，第三个参数是返回值的类型
         restTemplate.postForObject(addPlayerUrl, data, String.class);

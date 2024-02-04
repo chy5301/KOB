@@ -23,7 +23,7 @@ export default {
         "/src-noconflict/");
 
     const store = useStore();
-    let bots = ref([]);
+    let botList = ref([]);
 
     const newBot = reactive({
       title: "",
@@ -42,7 +42,7 @@ export default {
         },
         success(response) {
           if (response.status_message === "Success") {
-            bots.value = response.bot_list;
+            botList.value = response.bot_list;
           }
         }
       })
@@ -126,7 +126,7 @@ export default {
     }
 
     return {
-      bots,
+      botList,
       newBot,
       addBot,
       removeBot,
@@ -214,7 +214,7 @@ export default {
               </tr>
               </thead>
               <tbody>
-              <tr v-for="bot in bots" :key="bot.id" class="align-middle">
+              <tr v-for="bot in botList" :key="bot.id" class="align-middle">
                 <td>{{ bot.title }}</td>
                 <td>{{ bot.createTime }}</td>
                 <td>

@@ -23,10 +23,10 @@ public class MatchingPoolUtil extends Thread {
     }
 
     // 添加用户到匹配池
-    public void addPlayer(Integer userId, Integer rating) {
+    public void addPlayer(Integer userId, Integer rating, Integer botId) {
         lock.lock();
         try {
-            matchingPool.add(new Player(userId, rating, 0));
+            matchingPool.add(new Player(userId, rating, botId, 0));
         } finally {
             lock.unlock();
         }
@@ -107,7 +107,9 @@ public class MatchingPoolUtil extends Thread {
         System.out.println("Send result: " + player1 + " " + player2);
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add("player1_id", player1.getUserId().toString());
+        data.add("player1_bot_id", player1.getBotId().toString());
         data.add("player2_id", player2.getUserId().toString());
+        data.add("player2_bot_id", player2.getBotId().toString());
         // 向 backend 发送 startGame 的 post 请求
         restTemplate.postForObject(startGameUrl, data, String.class);
     }

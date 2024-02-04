@@ -13,14 +13,18 @@ import java.util.List;
 @NoArgsConstructor
 public class Player {
     private Integer id;
+    private Integer botId;
+    private String botCode;
     private Integer startX;
     private Integer startY;
     private List<Integer> steps;
     private List<Cell> cells;
 
     // 初始化 Player 并将起始位置加入 cells
-    public Player(Integer id, Integer startX, Integer startY) {
+    public Player(Integer id, Integer botId, String botCode, Integer startX, Integer startY) {
         this.id = id;
+        this.botId = botId;
+        this.botCode = botCode;
         this.startX = startX;
         this.startY = startY;
         steps = new ArrayList<>();

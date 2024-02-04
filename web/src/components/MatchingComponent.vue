@@ -1,17 +1,21 @@
 <script>
 import {ref} from "vue";
 import {useStore} from "vuex";
+import $ from "jquery";
 
 export default {
   setup() {
     const store = useStore();
     let matchButtonInfo = ref("开始匹配");
+    let botList = ref([]);
+    let selectBot = ref("-1");
 
     const clickMatchButton = () => {
       if (matchButtonInfo.value === "开始匹配") {
         matchButtonInfo.value = "取消匹配";
         store.state.pk.socket.send(JSON.stringify({
           event: "start-matching",
+          bot_id: selectBot.value,
         }));
       } else {
         matchButtonInfo.value = "开始匹配";
@@ -21,18 +25,39 @@ export default {
       }
     }
 
+    // 刷新Bot列表
+    const refreshBotList = () => {
+      $.ajax({
+        url: "http://localhost:3000/user/bot/getlist",
+        type: "GET",
+        headers: {
+          Authorization: "Bearer " + store.state.user.jwtToken,
+        },
+        success(response) {
+          if (response.status_message === "Success") {
+            botList.value = response.bot_list;
+          }
+        }
+      })
+    }
+
+    // 从服务器获取botList
+    refreshBotList();
+
     return {
       matchButtonInfo,
       clickMatchButton,
+      botList,
+      selectBot,
     }
   }
-} 
+}
 </script>
 
 <template>
   <div class="matching">
     <div class="row">
-      <div class="col-6">
+      <div class="col-4">
         <div class="user-photo">
           <img :src="$store.state.user.photo" alt="">
         </div>
@@ -40,7 +65,17 @@ export default {
           {{ $store.state.user.username }}
         </div>
       </div>
-      <div class="col-6">
+      <div class="col-4">
+        <div class="user-select-bot">
+          <select v-model="selectBot" class="form-select" :disabled="matchButtonInfo==='取消匹配'">
+            <option value="-1" selected>人工操作</option>
+            <option v-for="bot in botList" :key="bot.id" :value="bot.id">
+              {{ bot.title }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-4">
         <div class="user-photo">
           <img :src="$store.state.pk.opponentPhoto" alt="">
         </div>
@@ -78,5 +113,14 @@ div.user-username {
   font-size: 24px;
   font-weight: bold;
   padding-top: 2vh;
+}
+
+div.user-select-bot {
+  padding-top: 20vh;
+}
+
+div.user-select-bot > select {
+  width: 60%;
+  margin: 0 auto;
 }
 </style>
