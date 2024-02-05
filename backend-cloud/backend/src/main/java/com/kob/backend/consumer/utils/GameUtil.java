@@ -6,6 +6,8 @@ import com.kob.backend.consumer.WebSocketServer;
 import com.kob.backend.pojo.Bot;
 import com.kob.backend.pojo.Record;
 import lombok.Getter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.Date;
 import java.util.List;
@@ -22,6 +24,7 @@ public class GameUtil extends Thread {
     private final ReentrantLock lock = new ReentrantLock();
     private String status = "playing";  // playing:游戏正在进行，finished:游戏结束
     private String loser = "";    // all:平局，player1:player1输，player2:player2输
+    private static final String addBotUrl = "http://localhost:3002/bot/add";
 
     public GameUtil(Integer size, Integer innerWallsCount, Integer player1Id, Bot bot1, Integer player2Id, Bot bot2) {
         gameMap = new GameMapUtil(size, innerWallsCount);
@@ -100,6 +103,7 @@ public class GameUtil extends Thread {
         }
     }
 
+    // 检查玩家是否存活
     private boolean checkSnakeAlive(List<Cell> checkSnake, List<Cell> anotherSnake) {
         Cell head = checkSnake.getLast();
 
@@ -127,6 +131,41 @@ public class GameUtil extends Thread {
             else
                 loser = "player2";
         }
+    }
+
+    // 获取游戏当前状态信息
+    private String getGameInfo(Player player) {
+        Player thisPlayer, anotherPlayer;
+        if (player1.getId().equals(player.getId())) {
+            thisPlayer = player1;
+            anotherPlayer = player2;
+        } else {
+            thisPlayer = player2;
+            anotherPlayer = player1;
+        }
+
+        JSONObject gameInfo = new JSONObject();
+        gameInfo.put("game_map", getMap());
+        gameInfo.put("this_player_start_x", thisPlayer.getStartX());
+        gameInfo.put("this_player_start_y", thisPlayer.getStartY());
+        gameInfo.put("this_player_steps", thisPlayer.getSteps());
+        gameInfo.put("another_player_start_x", anotherPlayer.getStartX());
+        gameInfo.put("another_player_start_y", anotherPlayer.getStartY());
+        gameInfo.put("another_player_steps", anotherPlayer.getSteps());
+        return gameInfo.toJSONString();
+    }
+
+    // 发送bot代码给bot-running-system执行
+    private void sendBotCodeIfValidId(Player player) {
+        // botId为-1代表人工操作
+        if (player.getBotId().equals(-1))
+            return;
+
+        MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
+        data.add("user_id", player.getId().toString());
+        data.add("bot_code", player.getBotCode());
+        data.add("game_info", getGameInfo(player));
+        WebSocketServer.restTemplate.postForObject(addBotUrl, data, String.class);
     }
 
     // 广播信息的辅助函数
@@ -173,7 +212,7 @@ public class GameUtil extends Thread {
         WebSocketServer.recordMapper.insert(gameRecord);
     }
 
-    // 向两个Client公布结果
+    // 向两个Client公布游戏结果
     private void sendResult() {
         JSONObject response = new JSONObject();
         response.put("event", "result");
@@ -190,6 +229,10 @@ public class GameUtil extends Thread {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+        sendBotCodeIfValidId(player1);
+        sendBotCodeIfValidId(player2);
+
         // 5秒内判断5次
         for (int i = 0; i < 50; i++) {
             try {

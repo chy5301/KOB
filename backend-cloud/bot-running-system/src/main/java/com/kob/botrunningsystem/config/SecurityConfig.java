@@ -48,12 +48,6 @@ public class SecurityConfig {
      */
     private AuthorizationManager<RequestAuthorizationContext> hasIpAddress(String ipAddress) {
         IpAddressMatcher ipAddressMatcher = new IpAddressMatcher(ipAddress); // 创建IP地址匹配器对象
-        /*
-        Lambda表达式 (authentication, context) -> {...} 实际上是实现了 AuthorizationManager 接口的 check 方法。
-        在这个Lambda表达式中，接口的抽象方法的签名与 AuthorizationManager 的 check 方法相匹配，
-        因此它充当了 AuthorizationManager 接口的实现。
-        定义：AuthorizationDecision check(Supplier<Authentication> authentication, T object);
-        */
         return (authentication, context) -> { // 授权管理器
             HttpServletRequest request = context.getRequest(); // 获取请求对象
             return new AuthorizationDecision(ipAddressMatcher.matches(request)); // 返回授权决策结果

@@ -194,11 +194,13 @@ public class WebSocketServer {
 
     // 接收move消息后设置对应玩家的下一步移动方向
     private void move(int direction) {
-        // 如果当前WebSocket链接的是player1/player2，设置对应玩家的nextStep
+        // 如果当前WebSocket链接的是player1/player2，并且操作模式为人工操作(botId=-1)，设置对应玩家的nextStep
         if (game.getPlayer1().getId().equals(user.getId())) {
-            game.setPlayer1NextStep(direction);
+            if (game.getPlayer1().getBotId().equals(-1))
+                game.setPlayer1NextStep(direction);
         } else if (game.getPlayer2().getId().equals(user.getId())) {
-            game.setPlayer2NextStep(direction);
+            if (game.getPlayer2().getBotId().equals(-1))
+                game.setPlayer2NextStep(direction);
         }
     }
 }
