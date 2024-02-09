@@ -6,12 +6,12 @@ import java.util.Queue;
 import java.util.Random;
 
 
-public class GameMapUtil {
+public class GameMap {
     private final Integer size;
     private final Integer innerWallsCount;
     private final Block[][] gameMapBlocks;
 
-    static class Block {
+    private static final class Block {
         public Point parentPoint;
         public boolean isWall;
 
@@ -21,7 +21,7 @@ public class GameMapUtil {
         }
     }
 
-    public GameMapUtil(Integer size, Integer innerWallsCount) {
+    public GameMap(Integer size, Integer innerWallsCount) {
         this.size = size;
         this.innerWallsCount = innerWallsCount;
         this.gameMapBlocks = new Block[size][size];

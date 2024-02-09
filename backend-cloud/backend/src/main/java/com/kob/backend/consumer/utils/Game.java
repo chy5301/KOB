@@ -13,8 +13,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class GameUtil extends Thread {
-    private final GameMapUtil gameMap;
+public class Game extends Thread {
+    private final GameMap gameMap;
     @Getter
     private final Player player1;
     @Getter
@@ -26,8 +26,8 @@ public class GameUtil extends Thread {
     private String loser = "";    // all:平局，player1:player1输，player2:player2输
     private static final String addBotUrl = "http://localhost:3002/bot/add";
 
-    public GameUtil(Integer size, Integer innerWallsCount, Integer player1Id, Bot bot1, Integer player2Id, Bot bot2) {
-        gameMap = new GameMapUtil(size, innerWallsCount);
+    public Game(Integer size, Integer innerWallsCount, Integer player1Id, Bot bot1, Integer player2Id, Bot bot2) {
+        gameMap = new GameMap(size, innerWallsCount);
 
         Integer bot1Id = -1, bot2Id = -1;
         String bot1Code = "", bot2Code = "";

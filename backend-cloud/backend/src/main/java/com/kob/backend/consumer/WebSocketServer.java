@@ -1,7 +1,7 @@
 package com.kob.backend.consumer;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.kob.backend.consumer.utils.GameUtil;
+import com.kob.backend.consumer.utils.Game;
 import com.kob.backend.consumer.utils.JwtAuthenticationUtil;
 import com.kob.backend.mapper.BotMapper;
 import com.kob.backend.mapper.RecordMapper;
@@ -26,7 +26,7 @@ public class WebSocketServer {
     // ConcurrentHashMap是一个线程安全的HashMap，用于将用户ID映射到WebSocketServer实例
     public static final ConcurrentHashMap<Integer, WebSocketServer> users = new ConcurrentHashMap<>();
     private User user;
-    private GameUtil game = null;
+    private Game game = null;
     private Session session = null;
     private static UserMapper userMapper;
     private static BotMapper botMapper;
@@ -135,7 +135,7 @@ public class WebSocketServer {
         Bot bot2 = botMapper.selectById(player2BotId);
 
         // 初始化游戏
-        GameUtil game = new GameUtil(mapSize, innerWallsCount, player1.getId(), bot1, player2.getId(), bot2);
+        Game game = new Game(mapSize, innerWallsCount, player1.getId(), bot1, player2.getId(), bot2);
         game.createMap();
         users.get(player1.getId()).game = game;
         users.get(player2.getId()).game = game;
