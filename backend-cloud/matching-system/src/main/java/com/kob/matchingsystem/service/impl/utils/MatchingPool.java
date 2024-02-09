@@ -1,6 +1,8 @@
 package com.kob.matchingsystem.service.impl.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -11,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Component
-public class MatchingPoolUtil extends Thread {
+public class MatchingPool implements Runnable {
     private static List<Player> matchingPool = new ArrayList<>();
     private final ReentrantLock lock = new ReentrantLock();
     private static RestTemplate restTemplate;
@@ -19,7 +21,14 @@ public class MatchingPoolUtil extends Thread {
 
     @Autowired
     public void setRestTemplate(RestTemplate restTemplate) {
-        MatchingPoolUtil.restTemplate = restTemplate;
+        MatchingPool.restTemplate = restTemplate;
+    }
+
+    // 整个Spring Boot应用启动完成并且所有Spring Beans已经初始化完毕之后自动启动匹配线程
+    @EventListener(ApplicationReadyEvent.class)
+    public void init() {
+        Thread matchingPoolThread = new Thread(this);
+        matchingPoolThread.start();
     }
 
     // 添加用户到匹配池
@@ -117,7 +126,7 @@ public class MatchingPoolUtil extends Thread {
     // 匹配线程
     @Override
     public void run() {
-        while (true) {
+        while (!Thread.currentThread().isInterrupted()) {
             try {
                 Thread.sleep(1000);
                 lock.lock();
@@ -128,8 +137,7 @@ public class MatchingPoolUtil extends Thread {
                     lock.unlock();
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
-                break;
+                throw new RuntimeException(e);
             }
         }
     }

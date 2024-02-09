@@ -1,19 +1,17 @@
 package com.kob.matchingsystem.service.impl;
 
 import com.kob.matchingsystem.service.MatchingService;
-import com.kob.matchingsystem.service.impl.utils.MatchingPoolUtil;
+import com.kob.matchingsystem.service.impl.utils.MatchingPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MatchingServiceImpl implements MatchingService {
-    public static MatchingPoolUtil matchingPool;
+    public static MatchingPool matchingPool;
 
     @Autowired
-    public void setMatchingPool(MatchingPoolUtil matchingPool) {
+    public void setMatchingPool(MatchingPool matchingPool) {
         MatchingServiceImpl.matchingPool = matchingPool;
-        // 启动匹配线程
-        MatchingServiceImpl.matchingPool.start();
     }
 
     @Override

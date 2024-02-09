@@ -22,7 +22,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.30")
 
     // https://mvnrepository.com/artifact/org.jooq/joor-java-8
-    implementation("org.jooq:joor-java-8:0.9.15")
+    implementation("org.jooq:joor:0.9.15")
 
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
