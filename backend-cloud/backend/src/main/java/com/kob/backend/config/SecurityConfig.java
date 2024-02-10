@@ -69,7 +69,7 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 基于token，不需要session
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/user/account/token", "/user/account/register").permitAll()   // 放行api
-                        .requestMatchers("/pk/start/game").access(anyOf(hasIpAddress("127.0.0.1"), hasIpAddress("0:0:0:0:0:0:0:1")))
+                        .requestMatchers("/pk/start/game", "/pk/receive/bot/move").access(anyOf(hasIpAddress("127.0.0.1"), hasIpAddress("0:0:0:0:0:0:0:1")))
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         .anyRequest().authenticated()
                 )

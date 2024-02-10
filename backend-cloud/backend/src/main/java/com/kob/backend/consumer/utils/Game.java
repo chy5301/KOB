@@ -230,6 +230,7 @@ public class Game extends Thread {
             throw new RuntimeException(e);
         }
 
+        // 判断是否使用Bot，将Bot代码发送给bot-running-system处理
         sendBotCodeIfValidId(player1);
         sendBotCodeIfValidId(player2);
 

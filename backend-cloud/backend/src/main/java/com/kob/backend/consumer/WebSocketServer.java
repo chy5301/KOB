@@ -107,7 +107,7 @@ public class WebSocketServer {
         } else if ("stop-matching".equals(event)) {
             stopMatching();
         } else if ("move".equals(event)) {
-            move(data.getInteger("direction"));
+            moveByHuman(data.getInteger("direction"));
         }
     }
 
@@ -140,10 +140,7 @@ public class WebSocketServer {
         users.get(player1.getId()).game = game;
         users.get(player2.getId()).game = game;
 
-        // 启动游戏线程
-        game.start();
-
-        // 初始化游戏信息
+        // 发送初始化游戏信息给前端
         JSONObject gameInfo = new JSONObject();
         gameInfo.put("player1_id", game.getPlayer1().getId());
         gameInfo.put("player1_startX", game.getPlayer1().getStartX());
@@ -168,6 +165,38 @@ public class WebSocketServer {
         responseToPlayer2.put("opponent_photo", player1.getPhoto());
         responseToPlayer2.put("game_info", gameInfo);
         users.get(player2.getId()).sendMessage(responseToPlayer2.toJSONString());
+
+        // 等待2s，与web端匹配成功后的等待时间同步
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        // 启动游戏线程
+        game.start();
+    }
+
+    // 接收来自bot-running-system的下一步移动
+    public void moveByBot(Integer direction) {
+        // 判断要移动的是player1还是player2，设置对应玩家的nextStep
+        if (game.getPlayer1().getId().equals(user.getId())) {
+            game.setPlayer1NextStep(direction);
+        } else if (game.getPlayer2().getId().equals(user.getId())) {
+            game.setPlayer2NextStep(direction);
+        }
+    }
+
+    // 接收move消息后设置对应玩家的下一步移动方向
+    private void moveByHuman(Integer direction) {
+        // 如果当前WebSocket链接的是player1/player2，并且操作模式为人工操作(botId=-1)，设置对应玩家的nextStep
+        if (game.getPlayer1().getId().equals(user.getId())) {
+            if (game.getPlayer1().getBotId().equals(-1))
+                game.setPlayer1NextStep(direction);
+        } else if (game.getPlayer2().getId().equals(user.getId())) {
+            if (game.getPlayer2().getBotId().equals(-1))
+                game.setPlayer2NextStep(direction);
+        }
     }
 
     // 开始匹配
@@ -190,17 +219,5 @@ public class WebSocketServer {
         data.add("user_id", this.user.getId().toString());
         // 向 matching-system 发送 removePlayer 的 post 请求
         restTemplate.postForObject(removePlayerUrl, data, String.class);
-    }
-
-    // 接收move消息后设置对应玩家的下一步移动方向
-    private void move(int direction) {
-        // 如果当前WebSocket链接的是player1/player2，并且操作模式为人工操作(botId=-1)，设置对应玩家的nextStep
-        if (game.getPlayer1().getId().equals(user.getId())) {
-            if (game.getPlayer1().getBotId().equals(-1))
-                game.setPlayer1NextStep(direction);
-        } else if (game.getPlayer2().getId().equals(user.getId())) {
-            if (game.getPlayer2().getBotId().equals(-1))
-                game.setPlayer2NextStep(direction);
-        }
     }
 }

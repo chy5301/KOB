@@ -18,7 +18,7 @@ public class BotRunningServiceImpl implements BotRunningService {
     @Override
     public String addBot(Integer userId, String botCode, String gameInfo) {
         // 输出调试信息
-        System.out.println("Add bot: " + userId + " " + botCode + " " + gameInfo);
+        System.out.println("Add bot created by: " + userId);
         botQueue.putBot(new Bot(userId, botCode, gameInfo));
         return "Add bot success";
     }
