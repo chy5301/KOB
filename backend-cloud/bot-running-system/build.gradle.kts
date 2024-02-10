@@ -24,6 +24,9 @@ dependencies {
     // https://mvnrepository.com/artifact/org.jooq/joor-java-8
     implementation("org.jooq:joor:0.9.15")
 
+    // https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2
+    implementation("com.alibaba.fastjson2:fastjson2:2.0.43")
+
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }

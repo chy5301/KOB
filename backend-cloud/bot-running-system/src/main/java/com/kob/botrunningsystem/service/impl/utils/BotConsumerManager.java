@@ -1,5 +1,6 @@
 package com.kob.botrunningsystem.service.impl.utils;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.kob.botrunningsystem.utils.BotInterface;
 import org.joor.Reflect;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +35,10 @@ public class BotConsumerManager {
         @Override
         public void run() {
             // 获取botCode的运行结果并输出调试信息
-            System.out.println("Start to run bot created by user: " + bot.getUserId());
+            System.out.println("Start to run bot created by user " + bot.getUserId());
             Integer result = executeBotCode(bot);
-            System.out.println("End to run bot created by user: " + bot.getUserId() + " result = " + result);
+            System.out.println("End to run bot created by user " + bot.getUserId() + " result = " + result);
+
             // 将结果发送给backend
             MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
             data.add("user_id", bot.getUserId().toString());
@@ -46,6 +48,7 @@ public class BotConsumerManager {
 
         // 编译运行botCode
         private Integer executeBotCode(Bot bot) {
+            // 编译botCode
             UUID uuid = UUID.randomUUID();
             String uid = uuid.toString().substring(0, 8);
             BotInterface botInterface = Reflect.compile(
@@ -53,7 +56,27 @@ public class BotConsumerManager {
                     addUid(bot.getBotCode(), uid)
             ).create().get();
             System.out.println("compile success");
-            return botInterface.nextStep(bot.getGameInfo());
+
+            // 解码gameInfo
+            JSONObject gameInfo = JSONObject.parseObject(bot.getGameInfo());
+            int[][] gameMap = gameInfo.getObject("game_map", int[][].class);
+            Integer thisPlayerStartX = gameInfo.getInteger("this_player_start_x");
+            Integer thisPlayerStartY = gameInfo.getInteger("this_player_start_y");
+            List<Integer> thisPlayerSteps = gameInfo.getJSONArray("this_player_steps").toJavaList(Integer.class);
+            Integer anotherPlayerStartX = gameInfo.getInteger("another_player_start_x");
+            Integer anotherPlayerStartY = gameInfo.getInteger("another_player_start_y");
+            List<Integer> anotherPlayerSteps = gameInfo.getJSONArray("another_player_steps").toJavaList(Integer.class);
+
+            // 执行botCode
+            return botInterface.nextStep(
+                    gameMap,
+                    thisPlayerStartX,
+                    thisPlayerStartY,
+                    thisPlayerSteps,
+                    anotherPlayerStartX,
+                    anotherPlayerStartY,
+                    anotherPlayerSteps
+            );
         }
 
         // 在code中Bot类名后面加上uid
@@ -109,10 +132,10 @@ public class BotConsumerManager {
             while (!Thread.currentThread().isInterrupted()) {
                 System.out.println(Thread.currentThread().getName() + " try to take bot");
                 Bot bot = botQueue.takeBot();
-                System.out.println(Thread.currentThread().getName() + " take bot created by user: " + bot.getUserId() + " success");
+                System.out.println(Thread.currentThread().getName() + " take bot created by user " + bot.getUserId() + " success");
                 Future<?> future = executor.submit(new BotTask(bot));
                 futureList.add(new BotTaskFuture(future, System.currentTimeMillis()));
-                System.out.println(Thread.currentThread().getName() + " add botTask created by user: " + bot.getUserId() + " success");
+                System.out.println(Thread.currentThread().getName() + " add botTask created by user " + bot.getUserId() + " success");
             }
         });
         addBotTaskThread.start();

@@ -134,7 +134,7 @@ public class Game extends Thread {
     }
 
     // 获取游戏当前状态信息
-    private String getGameInfo(Player player) {
+    private String encodeGetGameInfo(Player player) {
         Player thisPlayer, anotherPlayer;
         if (player1.getId().equals(player.getId())) {
             thisPlayer = player1;
@@ -164,7 +164,7 @@ public class Game extends Thread {
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add("user_id", player.getId().toString());
         data.add("bot_code", player.getBotCode());
-        data.add("game_info", getGameInfo(player));
+        data.add("game_info", encodeGetGameInfo(player));
         WebSocketServer.restTemplate.postForObject(addBotUrl, data, String.class);
     }
 
