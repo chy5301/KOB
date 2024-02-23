@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.consumer.WebSocketServer;
 import com.kob.backend.pojo.Bot;
 import com.kob.backend.pojo.Record;
+import com.kob.backend.pojo.User;
 import lombok.Getter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -80,7 +81,7 @@ public class Game extends Thread {
                 if ("playing".equals(status)) {
                     sendMove();
                 } else {
-                    sendResult();
+                    endGame();
                     break;
                 }
             } else {    // 如果没有获取到两条蛇的输入，则游戏结束，没有输入的玩家判输
@@ -97,7 +98,7 @@ public class Game extends Thread {
                 } finally {
                     lock.unlock();
                 }
-                sendResult();
+                endGame();
                 break;
             }
         }
@@ -165,7 +166,7 @@ public class Game extends Thread {
         data.add("user_id", player.getId().toString());
         data.add("bot_code", player.getBotCode());
         data.add("game_info", encodeGetGameInfo(player));
-        WebSocketServer.restTemplate.postForObject(addBotUrl, data, String.class);
+        CommonBeanProvider.restTemplate.postForObject(addBotUrl, data, String.class);
     }
 
     // 广播信息的辅助函数
@@ -190,6 +191,23 @@ public class Game extends Thread {
         }
     }
 
+    // 更新两名玩家的天梯分
+    private void updateUserRating() {
+        User user1 = CommonBeanProvider.userMapper.selectById(player1.getId());
+        User user2 = CommonBeanProvider.userMapper.selectById(player2.getId());
+
+        if ("player1".equals(loser)) {
+            user1.setRating(user1.getRating() - 2);
+            user2.setRating(user2.getRating() + 5);
+        } else if ("player2".equals(loser)) {
+            user1.setRating(user1.getRating() + 5);
+            user2.setRating(user2.getRating() - 2);
+        }
+        CommonBeanProvider.userMapper.updateById(user1);
+        CommonBeanProvider.userMapper.updateById(user2);
+        System.out.println("Update user" + user1.getId() + " rating: " + user1.getRating() + " user" + user2.getId() + " rating: " + user2.getRating());
+    }
+
     // 将对局记录存储到数据库
     private void saveGameRecord() {
         Record gameRecord = new Record(
@@ -208,8 +226,7 @@ public class Game extends Thread {
                 loser,
                 new Date()
         );
-
-        WebSocketServer.recordMapper.insert(gameRecord);
+        CommonBeanProvider.recordMapper.insert(gameRecord);
     }
 
     // 向两个Client公布游戏结果
@@ -217,8 +234,17 @@ public class Game extends Thread {
         JSONObject response = new JSONObject();
         response.put("event", "result");
         response.put("loser", loser);
-        saveGameRecord();
         sendMessage(response.toJSONString());
+    }
+
+    // 结束游戏
+    private void endGame() {
+        // 更新两名玩家的天梯分
+        updateUserRating();
+        // 将对局记录存储到数据库
+        saveGameRecord();
+        // 向两个Client发送游戏结果
+        sendResult();
     }
 
     // 等待两个玩家的下一步操作

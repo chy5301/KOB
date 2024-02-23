@@ -4,7 +4,6 @@ import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.consumer.utils.Game;
 import com.kob.backend.consumer.utils.JwtAuthenticationUtil;
 import com.kob.backend.mapper.BotMapper;
-import com.kob.backend.mapper.RecordMapper;
 import com.kob.backend.mapper.UserMapper;
 import com.kob.backend.pojo.Bot;
 import com.kob.backend.pojo.User;
@@ -30,8 +29,7 @@ public class WebSocketServer {
     private Session session = null;
     private static UserMapper userMapper;
     private static BotMapper botMapper;
-    public static RecordMapper recordMapper;
-    public static RestTemplate restTemplate;
+    private static RestTemplate restTemplate;
 
     // 常量
     private static final Integer mapSize;
@@ -50,11 +48,6 @@ public class WebSocketServer {
     @Autowired
     public void setUserMapper(UserMapper userMapper) {
         WebSocketServer.userMapper = userMapper;
-    }
-
-    @Autowired
-    public void setRecordMapper(RecordMapper recordMapper) {
-        WebSocketServer.recordMapper = recordMapper;
     }
 
     @Autowired
@@ -202,6 +195,9 @@ public class WebSocketServer {
     // 开始匹配
     private void startMatching(Integer botId) {
         System.out.println("Start matching!");
+        // 更新user状态
+        this.user = userMapper.selectById(this.user.getId());
+        // 生成匹配消息
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add("user_id", this.user.getId().toString());
         data.add("rating", this.user.getRating().toString());
