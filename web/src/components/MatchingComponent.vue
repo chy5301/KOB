@@ -38,7 +38,7 @@ export default {
             botList.value = response.bot_list;
           }
         }
-      })
+      });
     }
 
     // 从服务器获取botList

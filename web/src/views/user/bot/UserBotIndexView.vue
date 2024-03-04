@@ -12,7 +12,7 @@ import 'ace-builds/src-noconflict/theme-chrome';
 import 'ace-builds/src-noconflict/ext-language_tools';
 
 export default {
-  components:{
+  components: {
     VAceEditor,
   },
   setup() {
@@ -45,7 +45,7 @@ export default {
             botList.value = response.bot_list;
           }
         }
-      })
+      });
     }
 
     refreshBotList();
@@ -75,7 +75,7 @@ export default {
             newBot.exception_message = response.exception_message;
           }
         }
-      })
+      });
     }
 
     // 删除Bot
@@ -96,7 +96,7 @@ export default {
             alert(response.exception_message);
           }
         },
-      })
+      });
     }
 
     // 修改bot
@@ -117,12 +117,12 @@ export default {
         success(response) {
           if (response.status_message === "Success") {
             refreshBotList();
-            Modal.getInstance("#update-bot-modal-"+bot.id).hide();
+            Modal.getInstance("#update-bot-modal-" + bot.id).hide();
           } else {
             bot.exception_message = response.exception_message;
           }
         }
-      })
+      });
     }
 
     return {
@@ -198,7 +198,9 @@ export default {
                   <div class="modal-footer">
                     <div class="error-message">{{ newBot.exception_message }}</div>
                     <button type="button" class="btn btn-primary" @click="addBot">提交</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="refreshBotList">取消</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="refreshBotList">
+                      取消
+                    </button>
                   </div>
                 </div>
               </div>
@@ -264,7 +266,9 @@ export default {
                         <div class="modal-footer">
                           <div class="error-message">{{ bot.exception_message }}</div>
                           <button type="button" class="btn btn-primary" @click="updateBot(bot)">提交</button>
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="refreshBotList">取消</button>
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                  @click="refreshBotList">取消
+                          </button>
                         </div>
                       </div>
                     </div>

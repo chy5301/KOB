@@ -62,7 +62,7 @@ export default {
                 error(response) {
                     data.error(response);
                 }
-            })
+            });
         },
         // 获取用户信息
         getInfo(context, data) {
@@ -99,7 +99,7 @@ export default {
                     // 调用错误回调函数，传递错误的响应数据
                     data.error(response);
                 }
-            })
+            });
         },
         // 登出用户
         logout(context){
