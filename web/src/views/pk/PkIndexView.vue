@@ -19,6 +19,8 @@ export default {
 
     // 每次进入pk页面，输赢状态重置
     store.commit("updateLoser", "none");
+    // 每次进入pk页面，设置isRecord=false
+    store.commit("updateIsRecord", false);
 
     let socket = null;
     onMounted(() => {

@@ -34,7 +34,40 @@ export class GameMap extends KOBGameObject {
     start() {
         this.pushWalls();
 
-        this.addListeningEvents();
+        // 判断是否是录像，如果是录像就回放，不是就监听键盘操作
+        if (this.store.state.record.isRecord) {
+            console.log("isRecord: " + this.store.state.record);
+            this.replayRecord();
+        } else {
+            this.addListeningEvents();
+        }
+    }
+
+    replayRecord() {
+        const player1Steps = this.store.state.record.player1Steps;
+        const player2Steps = this.store.state.record.player2Steps;
+        const loser = this.store.state.record.recordLoser;
+        const [snake1, snake2] = this.snakes;
+        let stepIndex = 0;
+        const intervalId = setInterval(() => {
+            // 判断回放是否即将结束，如果结束就标记死亡的蛇，没结束就让两条蛇行动一下
+            if (stepIndex >= player1Steps.length - 1) {
+                // 分别判断两条蛇是否死亡
+                if (loser === "all" || loser === "player1") {
+                    snake1.status = "died";
+                }
+                if (loser === "all" || loser === "player2") {
+                    snake2.status = "died";
+                }
+                // 终止回放
+                clearInterval(intervalId);
+            } else {
+                snake1.setDirection(player1Steps[stepIndex]);
+                snake2.setDirection(player2Steps[stepIndex]);
+                this.nextStep();
+                stepIndex++;
+            }
+        }, 500);
     }
 
     addListeningEvents() {
@@ -77,7 +110,7 @@ export class GameMap extends KOBGameObject {
 
     // 除了第一帧之外，每一帧执行一次
     update() {
-        // 每一帧计算新的Map边长
+        // 每一帧计算Map的新的实际边长(用户可能会调整页面的大小)
         this.updateSize();
         // 如果两条蛇都准备好移动，进入下一步
         if (this.checkSnakesReady())

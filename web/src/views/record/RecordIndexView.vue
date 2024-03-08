@@ -3,6 +3,7 @@ import ContentField from "@/components/ContentField.vue";
 import {useStore} from "vuex";
 import {ref} from "vue";
 import $ from "jquery";
+import router from "@/router/index";
 
 export default {
   components: {
@@ -30,19 +31,55 @@ export default {
         success(response) {
           records.value = response.records;
           recordsCount = response.records_count;
-          console.log(records);
         },
         error(response) {
           console.log(response);
         },
       });
     }
-
+    // 获取对局列表
     pullPage(currentPage, pageSize);
+
+    // 打开record页面
+    const openRecordContent = recordId => {
+      for (const record of records.value) {
+        if (record.record.id === recordId) {
+          // 设置isRecord=true
+          store.commit("updateIsRecord", true);
+          // 将当前的游戏信息设置为要播放的游戏录像的信息
+          console.log(JSON.parse(record.record.map));
+          store.commit("updateGame", {
+            game_map: JSON.parse(record.record.map),
+            player1_id: record.record.player1Id,
+            player1_startX: record.record.player1StartX,
+            player1_startY: record.record.player1StartY,
+            player2_id: record.record.player2Id,
+            player2_startX: record.record.player2StartX,
+            player2_startY: record.record.player2StartY,
+          });
+          store.commit("updateRecordInfo", {
+            player1Steps: JSON.parse(record.record.player1Steps),
+            player2Steps: JSON.parse(record.record.player2Steps),
+            recordLoser: record.record.loser,
+          });
+          console.log("isArray: " + Array.isArray(store.state.pk.gameMap));
+          console.log(store.state.pk.gameMap);
+          // 跳转页面
+          router.push({
+            name: "record_content",
+            params: {
+              recordId,
+            },
+          });
+          break;
+        }
+      }
+    }
 
     return {
       records,
       recordsCount,
+      openRecordContent,
     }
   }
 }
@@ -74,7 +111,7 @@ export default {
         <td> {{ record.result }}</td>
         <td>{{ record.record.createTime }}</td>
         <td>
-          <button @click="open_record_content(record.record.id)" type="button" class="btn btn-primary">
+          <button @click="openRecordContent(record.record.id)" type="button" class="btn btn-primary">
             查看录像
           </button>
         </td>
