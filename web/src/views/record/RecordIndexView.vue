@@ -1,9 +1,9 @@
 <script>
 import ContentField from "@/components/ContentField.vue";
 import {useStore} from "vuex";
+import {useRouter} from "vue-router"
 import {ref} from "vue";
 import $ from "jquery";
-import router from "@/router/index";
 
 export default {
   components: {
@@ -11,7 +11,9 @@ export default {
   },
   setup() {
     const store = useStore();
+    const router = useRouter();
     let currentPage = 1;
+    // 每页包含的record的数量
     let pageSize = 20;
     let records = ref([]);
     let recordsCount = 0;
@@ -44,26 +46,6 @@ export default {
     const openRecordContent = recordId => {
       for (const record of records.value) {
         if (record.record.id === recordId) {
-          // 设置isRecord=true
-          store.commit("updateIsRecord", true);
-          // 将当前的游戏信息设置为要播放的游戏录像的信息
-          console.log(JSON.parse(record.record.map));
-          store.commit("updateGame", {
-            game_map: JSON.parse(record.record.map),
-            player1_id: record.record.player1Id,
-            player1_startX: record.record.player1StartX,
-            player1_startY: record.record.player1StartY,
-            player2_id: record.record.player2Id,
-            player2_startX: record.record.player2StartX,
-            player2_startY: record.record.player2StartY,
-          });
-          store.commit("updateRecordInfo", {
-            player1Steps: JSON.parse(record.record.player1Steps),
-            player2Steps: JSON.parse(record.record.player2Steps),
-            recordLoser: record.record.loser,
-          });
-          console.log("isArray: " + Array.isArray(store.state.pk.gameMap));
-          console.log(store.state.pk.gameMap);
           // 跳转页面
           router.push({
             name: "record_content",
@@ -98,7 +80,7 @@ export default {
       </tr>
       </thead>
       <tbody>
-      <tr v-for="record in records" :key="record.record.id" class="align-middle">
+      <tr v-for="record in records" :key="record.record_id" class="align-middle">
         <td>
           <img :src="record.user1_photo" alt="" class="record-user-photo me-2">
           <!--&nbsp;(&nbsp;和class="me-2"都可以)-->
@@ -109,9 +91,9 @@ export default {
           <span class="record-user-username">{{ record.user2_username }}</span>
         </td>
         <td> {{ record.result }}</td>
-        <td>{{ record.record.createTime }}</td>
+        <td>{{ record.create_time }}</td>
         <td>
-          <button @click="openRecordContent(record.record.id)" type="button" class="btn btn-primary">
+          <button @click="openRecordContent(record.record_id)" type="button" class="btn btn-primary">
             查看录像
           </button>
         </td>

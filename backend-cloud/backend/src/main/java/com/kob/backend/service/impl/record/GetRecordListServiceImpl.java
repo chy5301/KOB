@@ -38,6 +38,7 @@ public class GetRecordListServiceImpl implements GetRecordListService {
             User user1 = userMapper.selectById(record.getPlayer1Id());
             User user2 = userMapper.selectById(record.getPlayer2Id());
             JSONObject item = new JSONObject();
+            item.put("record_id", record.getId());
             item.put("user1_photo", user1.getPhoto());
             item.put("user1_username", user1.getUsername());
             item.put("user2_photo", user2.getPhoto());
@@ -48,10 +49,11 @@ public class GetRecordListServiceImpl implements GetRecordListService {
             else if ("player2".equals(record.getLoser()))
                 result = "player2胜";
             item.put("result", result);
-            item.put("record", record);
+            item.put("create_time", record.getCreateTime());
             items.add(item);
         }
         JSONObject returnInfo = new JSONObject();
+        returnInfo.put("status_message", "Success");
         returnInfo.put("records", items);
         // 数据库中record总数
         returnInfo.put("records_count", recordMapper.selectCount(null));

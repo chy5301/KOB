@@ -1,19 +1,73 @@
 <script>
 import PlayGround from "@/components/PlayGround.vue";
+import {useStore} from "vuex";
+import {useRoute, useRouter} from "vue-router"
+import $ from "jquery";
 
 export default {
   components: {
     PlayGround,
   },
   setup() {
-    /*
-    目标是在没访问过/record页面时，也能通过/record/:recordId访问对应的游戏记录，
-    在/record页面获取recordList时，可以不用一并获取每个record的全部信息，
-    可以只获取两名玩家的username，photo，create_time和id，等到访问/record/:recordId页面时，再获取对应的record的详细信息
-    需要修改后端api
-    */
-    // const store = useStore();
+    const store = useStore();
+    const route = useRoute();
+    const router = useRouter();
+    let recordId = route.params.recordId;
 
+    const getRecordInfo = recordId => {
+      $.ajax({
+        url: "http://localhost:3000/record/getinfo",
+        /*
+        这里需要将$.ajax请求设置成同步的，否则子组件PlayGround的加载会在请求获取到信息之前完成，
+        导致等请求获取到record_info时，PlayGround组件已经先进行加载，获取到了错误的信息。
+        */
+        async: false,
+        data: {
+          record_id: recordId,
+        },
+        type: "GET",
+        headers: {
+          Authorization: "Bearer " + store.state.user.jwtToken,
+        },
+        success(response) {
+          if (response.status_message === "Success") {
+            setReplyInfo(response.record_info);
+          } else {
+            alert(response.exception_message);
+            router.push({
+              name: "record_index",
+            });
+          }
+        },
+        error(response) {
+          console.log(response);
+        },
+      });
+    }
+
+    const setReplyInfo = record => {
+      // 设置isRecord=true
+      store.commit("updateIsRecord", true);
+      // 将当前的游戏信息设置为要回放的游戏录像的信息
+      store.commit("updateGame", {
+        game_map: JSON.parse(record.map),
+        player1_id: record.player1Id,
+        player1_startX: record.player1StartX,
+        player1_startY: record.player1StartY,
+        player2_id: record.player2Id,
+        player2_startX: record.player2StartX,
+        player2_startY: record.player2StartY,
+      });
+      // 设置要回放的游戏录像的操作信息
+      store.commit("updateRecordInfo", {
+        player1Steps: JSON.parse(record.player1Steps),
+        player2Steps: JSON.parse(record.player2Steps),
+        recordLoser: record.loser,
+      });
+    }
+
+    // 获取record信息
+    getRecordInfo(recordId);
   }
 }
 </script>

@@ -36,7 +36,6 @@ export class GameMap extends KOBGameObject {
 
         // 判断是否是录像，如果是录像就回放，不是就监听键盘操作
         if (this.store.state.record.isRecord) {
-            console.log("isRecord: " + this.store.state.record);
             this.replayRecord();
         } else {
             this.addListeningEvents();
@@ -185,7 +184,6 @@ export class GameMap extends KOBGameObject {
                 if (snake.cells[i].r === head.r && snake.cells[i].c === head.c)
                     return false;
         }
-
         return true;
     }
 }
