@@ -14,9 +14,37 @@ export default {
     const router = useRouter();
     let currentPage = 1;
     // 每页包含的record的数量
-    let pageSize = 20;
+    let pageSize = 10;
     let records = ref([]);
     let recordsCount = 0;
+    // 可展示的分页有多少个
+    let pages = ref([]);
+
+    const turnToPage = pageNumber => {
+      if (pageNumber === -2) {
+        pageNumber = currentPage - 1;
+      } else if (pageNumber === -1) {
+        pageNumber = currentPage + 1;
+      }
+      let maxPageNumber = Math.ceil(recordsCount / pageSize);
+      if (pageNumber >= 1 && pageNumber <= maxPageNumber) {
+        pullPage(pageNumber, pageSize);
+      }
+    }
+
+    const updatePages = () => {
+      let maxPageNumber = Math.ceil(recordsCount / pageSize);
+      let newPages = [];
+      for (let i = currentPage - 2; i <= currentPage + 2; i++) {
+        if (i >= 1 && i <= maxPageNumber) {
+          newPages.push({
+            page_number: i,
+            is_active: i === currentPage ? "active" : "",
+          });
+        }
+      }
+      pages.value = newPages;
+    }
 
     const pullPage = (page, size) => {
       currentPage = page;
@@ -33,6 +61,7 @@ export default {
         success(response) {
           records.value = response.records;
           recordsCount = response.records_count;
+          updatePages();
         },
         error(response) {
           console.log(response);
@@ -62,6 +91,8 @@ export default {
       records,
       recordsCount,
       openRecordContent,
+      pages,
+      turnToPage,
     }
   }
 }
@@ -100,6 +131,24 @@ export default {
       </tr>
       </tbody>
     </table>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-end">
+        <li class="page-item" @click="turnToPage(-2)">
+          <a class="page-link" href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li :class="'page-item '+ page.is_active" v-for="page in pages" :key="page.page_number"
+            @click="turnToPage(page.page_number)">
+          <a class="page-link" href="#">{{ page.page_number }}</a>
+        </li>
+        <li class="page-item" @click="turnToPage(-1)">
+          <a class="page-link" href="#" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
   </ContentField>
 </template>
 
