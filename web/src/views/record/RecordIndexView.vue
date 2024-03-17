@@ -113,12 +113,12 @@ export default {
       <tbody>
       <tr v-for="record in records" :key="record.record_id" class="align-middle">
         <td>
-          <img :src="record.user1_photo" alt="" class="record-user-photo me-2">
+          <img :src="record.user1_photo" alt="" class="user-photo me-2">
           <!--&nbsp;(&nbsp;和class="me-2"都可以)-->
           <span class="record-user-username">{{ record.user1_username }}</span>
         </td>
         <td>
-          <img :src="record.user2_photo" alt="" class="record-user-photo me-2">
+          <img :src="record.user2_photo" alt="" class="user-photo me-2">
           <span class="record-user-username">{{ record.user2_username }}</span>
         </td>
         <td> {{ record.result }}</td>
@@ -153,7 +153,7 @@ export default {
 </template>
 
 <style scoped>
-img.record-user-photo {
+img.user-photo {
   width: 4vh;
   height: auto;
   border-radius: 50%;

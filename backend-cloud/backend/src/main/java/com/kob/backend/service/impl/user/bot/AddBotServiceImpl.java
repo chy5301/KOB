@@ -1,5 +1,6 @@
 package com.kob.backend.service.impl.user.bot;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kob.backend.mapper.BotMapper;
 import com.kob.backend.pojo.Bot;
 import com.kob.backend.pojo.User;
@@ -23,13 +24,22 @@ public class AddBotServiceImpl implements AddBotService {
 
     @Override
     public Map<String, String> addBot(Map<String, String> data) {
-        User user= UserUtil.getLoggedinUser();
+        User user = UserUtil.getLoggedinUser();
 
         String title = data.get("title");
         String description = data.get("description");
         String content = data.get("content");
 
         Map<String, String> returnInfo = new HashMap<>();
+
+        QueryWrapper<Bot> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", user.getId());
+        Long botCount = botMapper.selectCount(queryWrapper);
+        if (botCount >= 10) {
+            returnInfo.put("status_message", "Exception");
+            returnInfo.put("exception_message", "每个用户只能创建10个Bot");
+            return returnInfo;
+        }
 
         if (title == null || title.isEmpty()) {
             returnInfo.put("status_message", "Exception");
@@ -68,7 +78,7 @@ public class AddBotServiceImpl implements AddBotService {
         Date currentTime = new Date();
         Bot bot = new Bot(null, user.getId(), title, description, content, currentTime, currentTime);
         botMapper.insert(bot);
-        returnInfo.put("status_message","Success");
+        returnInfo.put("status_message", "Success");
         return returnInfo;
     }
 }

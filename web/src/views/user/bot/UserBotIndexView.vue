@@ -151,6 +151,7 @@ export default {
         <dic class="card">
           <div class="card-header d-flex justify-content-between align-items-center">
             <span style="font-size:120%;">我的Bot</span>
+            <span style="font-size:120%;">{{ botList.length }}/10</span>
             <!-- 点击创建按钮打开模态框 -->
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-bot-modal">
               创建Bot

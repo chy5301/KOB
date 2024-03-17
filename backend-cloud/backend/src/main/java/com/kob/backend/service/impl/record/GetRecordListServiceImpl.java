@@ -31,10 +31,10 @@ public class GetRecordListServiceImpl implements GetRecordListService {
         IPage<Record> recordIPage = new Page<>(pageNumber, pageSize);
         QueryWrapper<Record> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByDesc("id");
-        List<Record> records = recordMapper.selectPage(recordIPage, queryWrapper).getRecords();
+        List<Record> recordList = recordMapper.selectPage(recordIPage, queryWrapper).getRecords();
 
         List<JSONObject> items = new ArrayList<>();
-        for (Record record : records) {
+        for (Record record : recordList) {
             User user1 = userMapper.selectById(record.getPlayer1Id());
             User user2 = userMapper.selectById(record.getPlayer2Id());
             JSONObject item = new JSONObject();

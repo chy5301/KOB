@@ -48,9 +48,6 @@ export default {
                 <router-link class="dropdown-item" :to="{name:'user_bot_index'}">我的Bot</router-link>
               </li>
               <li>
-                <a class="dropdown-item" href="#">Another action</a>
-              </li>
-              <li>
                 <hr class="dropdown-divider">
               </li>
               <li><a class="dropdown-item" href="#" @click="logout">退出</a></li>
