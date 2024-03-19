@@ -1,5 +1,6 @@
 package com.kob.backend.controller.user.bot;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.service.user.bot.RemoveBotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ public class RemoveBotController {
     }
 
     @PostMapping("/user/bot/remove")
-    public Map<String, String> removeBot(@RequestParam Map<String, String> params) {
+    public JSONObject removeBot(@RequestParam Map<String, String> params) {
         return removeBotService.removeBot(params);
     }
 }

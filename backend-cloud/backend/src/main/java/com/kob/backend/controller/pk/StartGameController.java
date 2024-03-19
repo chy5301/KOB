@@ -1,5 +1,6 @@
 package com.kob.backend.controller.pk;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.service.pk.StartGameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
@@ -19,7 +20,7 @@ public class StartGameController {
     }
 
     @PostMapping("/pk/start/game")
-    public String startGame(@RequestParam MultiValueMap<String, String> params) {
+    public JSONObject startGame(@RequestParam MultiValueMap<String, String> params) {
         Integer player1Id = Integer.parseInt(Objects.requireNonNull(params.getFirst("player1_id")));
         Integer player1BotId = Integer.parseInt(Objects.requireNonNull(params.getFirst("player1_bot_id")));
         Integer player2Id = Integer.parseInt(Objects.requireNonNull(params.getFirst("player2_id")));

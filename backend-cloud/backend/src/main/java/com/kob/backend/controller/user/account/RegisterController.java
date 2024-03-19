@@ -1,5 +1,6 @@
 package com.kob.backend.controller.user.account;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.service.user.account.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ public class RegisterController {
     }
 
     @PostMapping("/user/account/register")
-    public Map<String, String> register(@RequestParam Map<String, String> params) {
+    public JSONObject register(@RequestParam Map<String, String> params) {
         String username = params.get("username");
         String password = params.get("password");
         String confirmedPassword = params.get("confirmed_password");

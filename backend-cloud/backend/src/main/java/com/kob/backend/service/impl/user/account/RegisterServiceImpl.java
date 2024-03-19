@@ -1,5 +1,6 @@
 package com.kob.backend.service.impl.user.account;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kob.backend.mapper.UserMapper;
 import com.kob.backend.pojo.User;
@@ -8,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class RegisterServiceImpl implements RegisterService {
@@ -32,9 +31,9 @@ public class RegisterServiceImpl implements RegisterService {
      * @return 注册结果信息
      */
     @Override
-    public Map<String, String> register(String username, String password, String confirmPassword) {
+    public JSONObject register(String username, String password, String confirmPassword) {
 
-        Map<String, String> returnInfo = new HashMap<>(); // 返回结果信息
+        JSONObject returnInfo = new JSONObject(); // 返回结果信息
 
         if (username == null) { // 判断用户名是否为空
             returnInfo.put("status_message", "Exception"); // 设置状态信息为异常

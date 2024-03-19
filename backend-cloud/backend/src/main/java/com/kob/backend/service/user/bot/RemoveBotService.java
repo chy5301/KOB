@@ -1,7 +1,9 @@
 package com.kob.backend.service.user.bot;
 
+import com.alibaba.fastjson2.JSONObject;
+
 import java.util.Map;
 
 public interface RemoveBotService {
-    Map<String, String> removeBot(Map<String, String> data);
+    JSONObject removeBot(Map<String, String> data);
 }

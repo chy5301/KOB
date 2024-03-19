@@ -1,5 +1,6 @@
 package com.kob.botrunningsystem.controller;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.kob.botrunningsystem.service.BotRunningService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
@@ -19,7 +20,7 @@ public class BotRunningController {
     }
 
     @PostMapping("/bot/add")
-    public String addBot(@RequestParam MultiValueMap<String, String> params) {
+    public JSONObject addBot(@RequestParam MultiValueMap<String, String> params) {
         Integer userId = Integer.parseInt(Objects.requireNonNull(params.getFirst("user_id")));
         String botCode = params.getFirst("bot_code");
         String gameInfo = params.getFirst("game_info");

@@ -1,5 +1,6 @@
 package com.kob.backend.service.impl.user.bot;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.mapper.BotMapper;
 import com.kob.backend.pojo.Bot;
 import com.kob.backend.pojo.User;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -23,7 +23,7 @@ public class UpdateBotServiceImpl implements UpdateBotService {
     }
 
     @Override
-    public Map<String, String> updateBot(Map<String, String> data) {
+    public JSONObject updateBot(Map<String, String> data) {
         User user = UserUtil.getLoggedinUser();
 
         int botId = Integer.parseInt(data.get("bot_id"));
@@ -32,7 +32,7 @@ public class UpdateBotServiceImpl implements UpdateBotService {
         String content = data.get("content");
         Bot bot = botMapper.selectById(botId);
 
-        Map<String, String> returnInfo = new HashMap<>();
+        JSONObject returnInfo = new JSONObject();
 
         if (bot == null) {
             returnInfo.put("status_message", "Exception");

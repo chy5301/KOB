@@ -1,5 +1,6 @@
 package com.kob.backend.controller.pk;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.service.pk.ReceiveBotMoveService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
@@ -19,7 +20,7 @@ public class ReceiveBotMoveController {
     }
 
     @PostMapping("/pk/receive/bot/move")
-    public String receiveBotMove(@RequestParam MultiValueMap<String, String> params) {
+    public JSONObject receiveBotMove(@RequestParam MultiValueMap<String, String> params) {
         Integer userId = Integer.parseInt(Objects.requireNonNull(params.getFirst("user_id")));
         Integer direction = Integer.parseInt(Objects.requireNonNull(params.getFirst("direction")));
         return receiveBotMoveService.receiveBotMove(userId, direction);

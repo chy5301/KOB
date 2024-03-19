@@ -1,5 +1,6 @@
 package com.kob.backend.service.impl.user.account;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.pojo.User;
 import com.kob.backend.service.impl.utils.UserDetailsImpl;
 import com.kob.backend.service.user.account.LoginService;
@@ -9,9 +10,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class LoginServiceImpl implements LoginService {
@@ -27,17 +25,17 @@ public class LoginServiceImpl implements LoginService {
      *
      * @param username 用户名
      * @param password 密码
-     * @return 包含Token信息的Map对象
+     * @return 包含Token信息的JSONObject
      */
     @Override
-    public Map<String, String> getToken(String username, String password) {
+    public JSONObject getToken(String username, String password) {
 
         // 创建一个带有用户名和密码的UsernamePasswordAuthenticationToken对象
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(username, password);
 
-        // 创建一个用于存储返回信息的Map
-        Map<String, String> returnInfo = new HashMap<>();
+        // 创建一个用于存储返回信息的JSONObject
+        JSONObject returnInfo = new JSONObject();
 
         // 使用认证管理器对authenticationToken进行认证，如果认证失败会抛出异常
         Authentication authenticate;
@@ -62,7 +60,7 @@ public class LoginServiceImpl implements LoginService {
         returnInfo.put("status_message", "Success");
         returnInfo.put("token", jwtToken);
 
-        // 返回map对象
+        // 返回JSONObject
         return returnInfo;
     }
 }

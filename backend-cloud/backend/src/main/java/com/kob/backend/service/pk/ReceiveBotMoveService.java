@@ -1,5 +1,7 @@
 package com.kob.backend.service.pk;
 
+import com.alibaba.fastjson2.JSONObject;
+
 public interface ReceiveBotMoveService {
-    String receiveBotMove(Integer userId, Integer direction);
+    JSONObject receiveBotMove(Integer userId, Integer direction);
 }

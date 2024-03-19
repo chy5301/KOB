@@ -1,5 +1,6 @@
 package com.kob.backend.service.impl.user.bot;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kob.backend.mapper.BotMapper;
 import com.kob.backend.pojo.Bot;
@@ -9,9 +10,7 @@ import com.kob.backend.service.user.bot.GetBotListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class GetBotListServiceImpl implements GetBotListService {
@@ -23,10 +22,10 @@ public class GetBotListServiceImpl implements GetBotListService {
     }
 
     @Override
-    public Map<String, Object> getBotList() {
+    public JSONObject getBotList() {
         User user = UserUtil.getLoggedinUser();
 
-        Map<String, Object> returnInfo = new HashMap<>();
+        JSONObject returnInfo = new JSONObject();
 
         QueryWrapper<Bot> botQueryWrapper = new QueryWrapper<>();
         botQueryWrapper.eq("user_id", user.getId());

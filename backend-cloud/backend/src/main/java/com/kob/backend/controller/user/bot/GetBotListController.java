@@ -1,5 +1,6 @@
 package com.kob.backend.controller.user.bot;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.service.user.bot.GetBotListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +17,7 @@ public class GetBotListController {
     }
 
     @GetMapping("/user/bot/getlist")
-    public Map<String, Object> getBotList() {
+    public JSONObject getBotList() {
         return getBotListService.getBotList();
     }
 }

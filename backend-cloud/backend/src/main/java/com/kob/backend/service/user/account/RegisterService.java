@@ -1,7 +1,7 @@
 package com.kob.backend.service.user.account;
 
-import java.util.Map;
+import com.alibaba.fastjson2.JSONObject;
 
 public interface RegisterService {
-    Map<String, String> register(String username, String password, String confirmPassword);
+    JSONObject register(String username, String password, String confirmPassword);
 }

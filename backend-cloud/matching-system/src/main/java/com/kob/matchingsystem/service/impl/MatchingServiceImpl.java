@@ -1,5 +1,6 @@
 package com.kob.matchingsystem.service.impl;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.kob.matchingsystem.service.MatchingService;
 import com.kob.matchingsystem.service.impl.utils.MatchingPool;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +16,22 @@ public class MatchingServiceImpl implements MatchingService {
     }
 
     @Override
-    public String addPlayer(Integer userId, Integer rating, Integer botId) {
+    public JSONObject addPlayer(Integer userId, Integer rating, Integer botId) {
         // 临时调试信息
         System.out.println("Add player: " + userId + " " + rating);
         matchingPool.addPlayer(userId, rating, botId);
-        return "Add player success";
+        JSONObject returnInfo = new JSONObject();
+        returnInfo.put("status_message", "Success");
+        return returnInfo;
     }
 
     @Override
-    public String removePlayer(Integer userId) {
+    public JSONObject removePlayer(Integer userId) {
         // 临时调试信息
         System.out.println("Remove player: " + userId);
         matchingPool.removePlayer(userId);
-        return "Remove player success";
+        JSONObject returnInfo = new JSONObject();
+        returnInfo.put("status_message", "Success");
+        return returnInfo;
     }
 }

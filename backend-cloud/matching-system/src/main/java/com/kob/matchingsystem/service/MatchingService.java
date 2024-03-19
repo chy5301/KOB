@@ -1,7 +1,9 @@
 package com.kob.matchingsystem.service;
 
-public interface MatchingService {
-    String addPlayer(Integer userId, Integer rating, Integer botId);
+import com.alibaba.fastjson2.JSONObject;
 
-    String removePlayer(Integer userId);
+public interface MatchingService {
+    JSONObject addPlayer(Integer userId, Integer rating, Integer botId);
+
+    JSONObject removePlayer(Integer userId);
 }

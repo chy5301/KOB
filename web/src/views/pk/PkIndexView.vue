@@ -32,16 +32,13 @@ export default {
 
       socket.onopen = () => {
         console.log("Connected!");
-        console.log(socketUrl);
         store.commit("updateSocket", socket);
       }
 
       socket.onmessage = message => {
         const data = JSON.parse(message.data);
-        console.log(data);
         // 如果匹配成功
         if (data.event === "matching-success") {
-          console.log("updateOpponent")
           store.commit("updateOpponent", {
             username: data.opponent_username,
             photo: data.opponent_photo,
@@ -51,13 +48,11 @@ export default {
           }, 2000);
           store.commit("updateGame", data.game_info);
         } else if (data.event === "move") {
-          console.log(data);
           const game = store.state.pk.gameObject;
           const [snake1, snake2] = game.snakes;
           snake1.setDirection(data.player1_direction);
           snake2.setDirection(data.player2_direction);
         } else if (data.event === "result") {
-          console.log(data);
           const game = store.state.pk.gameObject;
           const [snake1, snake2] = game.snakes;
 
@@ -68,14 +63,12 @@ export default {
           if (data.loser === "all" || data.loser === "player2") {
             snake2.status = "died";
           }
-          console.log("player1Id: " + store.state.pk.player1Id + " player2Id: " + store.state.pk.player2Id + " userId: " + store.state.user.id);
           store.commit("updateLoser", data.loser);
         }
       }
 
       socket.onclose = () => {
         console.log("Disconnected!");
-        console.log(socketUrl);
       }
     });
 

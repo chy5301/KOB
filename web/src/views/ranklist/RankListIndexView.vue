@@ -57,7 +57,6 @@ export default {
           Authorization: "Bearer " + store.state.user.jwtToken,
         },
         success(response) {
-          console.log(response);
           users.value = response.users;
           usersCount = response.users_count;
           updatePages();

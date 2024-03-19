@@ -1,5 +1,6 @@
 package com.kob.backend.controller.user.bot;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.service.user.bot.AddBotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ public class AddBotController {
     }
 
     @PostMapping("/user/bot/add")
-    public Map<String, String> addBot(@RequestParam Map<String, String> params) {
+    public JSONObject addBot(@RequestParam Map<String, String> params) {
         return addBotService.addBot(params);
     }
 }

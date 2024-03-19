@@ -1,5 +1,6 @@
 package com.kob.backend.service.impl.user.bot;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.mapper.BotMapper;
 import com.kob.backend.pojo.Bot;
 import com.kob.backend.pojo.User;
@@ -8,7 +9,6 @@ import com.kob.backend.service.user.bot.RemoveBotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -22,13 +22,13 @@ public class RemoveBotServiceImpl implements RemoveBotService {
     }
 
     @Override
-    public Map<String, String> removeBot(Map<String, String> data) {
+    public JSONObject removeBot(Map<String, String> data) {
         User user = UserUtil.getLoggedinUser();
 
         int botId = Integer.parseInt(data.get("bot_id"));
         Bot bot = botMapper.selectById(botId);
 
-        Map<String, String> returnInfo = new HashMap<>();
+        JSONObject returnInfo = new JSONObject();
 
         if (bot == null) {
             returnInfo.put("status_message", "Exception");
