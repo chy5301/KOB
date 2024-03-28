@@ -25,12 +25,35 @@ export default {
     const store = useStore();
     let botList = ref([]);
 
+    const initialCode = "package com.kob.botrunningsystem.utils;\n" +
+        "\n" +
+        "import java.util.List;\n" +
+        "\n" +
+        "public class BotInterfaceImpl implements com.kob.botrunningsystem.utils.BotInterface {\n" +
+        "    @Override\n" +
+        "    public Integer nextStep(\n" +
+        "            int[][] gameMap,\n" +
+        "            Integer thisPlayerStartX,\n" +
+        "            Integer thisPlayerStartY,\n" +
+        "            List<Integer> thisPlayerSteps,\n" +
+        "            Integer anotherPlayerStartX,\n" +
+        "            Integer anotherPlayerStartY,\n" +
+        "            List<Integer> anotherPlayerSteps\n" +
+        "    ) {\n" +
+        "        Integer direction = 0;\n" +
+        "        \n" +
+        "        // 在此处编写你的Bot代码\n" +
+        "\n" +
+        "        return direction;\n" +
+        "    }\n" +
+        "}\n";
+
     const newBot = reactive({
       title: "",
       description: "",
-      content: "",
+      content: initialCode,
       exception_message: "",
-    })
+    });
 
     // 刷新Bot列表
     const refreshBotList = () => {
@@ -70,7 +93,7 @@ export default {
             Modal.getInstance("#add-bot-modal").hide();
             newBot.title = "";
             newBot.description = "";
-            newBot.content = "";
+            newBot.content = initialCode;
           } else {
             newBot.exception_message = response.exception_message;
           }
