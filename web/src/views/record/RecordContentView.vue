@@ -31,7 +31,7 @@ export default {
         },
         success(response) {
           if (response.status_message === "Success") {
-            setReplyInfo(response.record_info);
+            setReplyInfo(response.record_info, response.players_info);
           } else {
             alert(response.exception_message);
             router.push({
@@ -45,24 +45,25 @@ export default {
       });
     }
 
-    const setReplyInfo = record => {
+    const setReplyInfo = (record_info, players_info) => {
       // 设置isRecord=true
       store.commit("updateIsRecord", true);
       // 将当前的游戏信息设置为要回放的游戏录像的信息
       store.commit("updateGame", {
-        game_map: JSON.parse(record.map),
-        player1_id: record.player1Id,
-        player1_startX: record.player1StartX,
-        player1_startY: record.player1StartY,
-        player2_id: record.player2Id,
-        player2_startX: record.player2StartX,
-        player2_startY: record.player2StartY,
+        game_map: JSON.parse(record_info.map),
+        player1_id: record_info.player1Id,
+        player1_startX: record_info.player1StartX,
+        player1_startY: record_info.player1StartY,
+        player2_id: record_info.player2Id,
+        player2_startX: record_info.player2StartX,
+        player2_startY: record_info.player2StartY,
       });
+      store.commit("updateRecordPlayersInfo", players_info)
       // 设置要回放的游戏录像的操作信息
       store.commit("updateRecordInfo", {
-        player1Steps: JSON.parse(record.player1Steps),
-        player2Steps: JSON.parse(record.player2Steps),
-        recordLoser: record.loser,
+        player1Steps: JSON.parse(record_info.player1Steps),
+        player2Steps: JSON.parse(record_info.player2Steps),
+        recordLoser: record_info.loser,
       });
     }
 

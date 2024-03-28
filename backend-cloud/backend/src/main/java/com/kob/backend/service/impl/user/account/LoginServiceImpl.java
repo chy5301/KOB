@@ -44,7 +44,7 @@ public class LoginServiceImpl implements LoginService {
         } catch (Exception e) {
             // 返回异常信息
             returnInfo.put("status_message", "Exception");
-            returnInfo.put("exception_class_name", e.getClass().getName());
+            returnInfo.put("exception_class", e.getClass().getName());
             returnInfo.put("exception_message", e.getMessage());
             return returnInfo;
         }

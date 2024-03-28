@@ -74,7 +74,7 @@ export default {
     // 打开record页面
     const openRecordContent = recordId => {
       for (const record of records.value) {
-        if (record.record.id === recordId) {
+        if (record.record_id === recordId) {
           // 跳转页面
           router.push({
             name: "record_content",

@@ -34,16 +34,24 @@ public class BotConsumerManager {
     private record BotTask(Bot bot) implements Runnable {
         @Override
         public void run() {
-            // 获取botCode的运行结果并输出调试信息
-            System.out.println("Start to run bot created by user " + bot.getUserId());
-            Integer result = executeBotCode(bot);
-            System.out.println("End to run bot created by user " + bot.getUserId() + " result = " + result);
-
-            // 将结果发送给backend
             MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
-            data.add("user_id", bot.getUserId().toString());
-            data.add("direction", result.toString());
-            restTemplate.postForObject(receiveBotMoveUrl, data, String.class);
+            try {// 获取botCode的运行结果并输出调试信息
+                System.out.println("Start to run bot created by user " + bot.getUserId());
+                Integer result = executeBotCode(bot);
+                System.out.println("End to run bot created by user " + bot.getUserId() + " result = " + result);
+
+                // 将结果发送给backend
+                data.add("status_message", "Success");
+                data.add("user_id", bot.getUserId().toString());
+                data.add("direction", result.toString());
+            } catch (Exception e) {
+                data.add("status_message", "Exception");
+                data.add("user_id", bot.getUserId().toString());
+                data.add("exception_class", e.getClass().getName());
+                data.add("exception_message", e.getMessage());
+            } finally {
+                restTemplate.postForObject(receiveBotMoveUrl, data, String.class);
+            }
         }
 
         // 编译运行botCode

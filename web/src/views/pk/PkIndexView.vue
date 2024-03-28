@@ -52,6 +52,8 @@ export default {
           const [snake1, snake2] = game.snakes;
           snake1.setDirection(data.player1_direction);
           snake2.setDirection(data.player2_direction);
+        } else if (data.event === "bot-running-exception") {
+          alert("Bot代码运行异常，请检查");
         } else if (data.event === "result") {
           const game = store.state.pk.gameObject;
           const [snake1, snake2] = game.snakes;

@@ -170,6 +170,15 @@ public class WebSocketServer {
         game.start();
     }
 
+    // 反馈bot代码执行异常信息
+    public void runningException(String exceptionClass, String exceptionMessage) {
+        JSONObject exceptionInfo = new JSONObject();
+        exceptionInfo.put("event", "bot-running-exception");
+        exceptionInfo.put("exception_class", exceptionClass);
+        exceptionInfo.put("exception_message", exceptionMessage);
+        sendMessage(exceptionInfo.toJSONString());
+    }
+
     // 接收来自bot-running-system的下一步移动
     public void moveByBot(Integer direction) {
         // 判断要移动的是player1还是player2，设置对应玩家的nextStep
