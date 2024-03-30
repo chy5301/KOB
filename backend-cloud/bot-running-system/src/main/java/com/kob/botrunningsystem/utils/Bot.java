@@ -3,9 +3,35 @@ package com.kob.botrunningsystem.utils;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Supplier;
 
-// 仅做bot接口的实现实例
-public class BotInterfaceImpl implements com.kob.botrunningsystem.utils.BotInterface {
+public class Bot implements Supplier<Integer> {
+    private final int[][] gameMap;
+    private final Integer thisPlayerStartX;
+    private final Integer thisPlayerStartY;
+    private final List<Integer> thisPlayerSteps;
+    private final Integer anotherPlayerStartX;
+    private final Integer anotherPlayerStartY;
+    private final List<Integer> anotherPlayerSteps;
+
+    public Bot(
+            int[][] gameMap,
+            Integer thisPlayerStartX,
+            Integer thisPlayerStartY,
+            List<Integer> thisPlayerSteps,
+            Integer anotherPlayerStartX,
+            Integer anotherPlayerStartY,
+            List<Integer> anotherPlayerSteps
+    ) {
+        this.gameMap = gameMap;
+        this.thisPlayerStartX = thisPlayerStartX;
+        this.thisPlayerStartY = thisPlayerStartY;
+        this.thisPlayerSteps = thisPlayerSteps;
+        this.anotherPlayerStartX = anotherPlayerStartX;
+        this.anotherPlayerStartY = anotherPlayerStartY;
+        this.anotherPlayerSteps = anotherPlayerSteps;
+    }
+
     private static final int[] dx = {-1, 0, 1, 0}, dy = {0, 1, 0, -1};
 
     private static class Cell {
@@ -44,15 +70,7 @@ public class BotInterfaceImpl implements com.kob.botrunningsystem.utils.BotInter
     }
 
     @Override
-    public Integer nextStep(
-            int[][] gameMap,
-            Integer thisPlayerStartX,
-            Integer thisPlayerStartY,
-            List<Integer> thisPlayerSteps,
-            Integer anotherPlayerStartX,
-            Integer anotherPlayerStartY,
-            List<Integer> anotherPlayerSteps
-    ) {
+    public Integer get() {
         List<Cell> thisPlayerCells = getCells(thisPlayerStartX, thisPlayerStartY, thisPlayerSteps);
         List<Cell> anotherPlayerCells = getCells(anotherPlayerStartX, anotherPlayerStartY, anotherPlayerSteps);
 

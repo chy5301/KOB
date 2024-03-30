@@ -25,7 +25,7 @@ public class Game extends Thread {
     private final ReentrantLock lock = new ReentrantLock();
     private String status = "playing";  // playing:游戏正在进行，finished:游戏结束
     private String loser = "";    // all:平局，player1:player1输，player2:player2输
-    private static final String addBotUrl = "http://localhost:3002/api/bot/add-task";
+    private static final String addBotUrl = "http://localhost:3002/api/bot/task";
 
     public Game(Integer size, Integer innerWallsCount, Integer player1Id, Bot bot1, Integer player2Id, Bot bot2) {
         gameMap = new GameMap(size, innerWallsCount);

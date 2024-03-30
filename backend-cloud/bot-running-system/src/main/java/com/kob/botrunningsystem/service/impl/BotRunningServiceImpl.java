@@ -19,7 +19,7 @@ public class BotRunningServiceImpl implements BotRunningService {
     @Override
     public JSONObject addBot(Integer userId, String botCode, String gameInfo) {
         // 输出调试信息
-        System.out.println("Add bot created by user " + userId);
+        System.out.println("Thread " + Thread.currentThread().getName() + " add bot created by user " + userId);
         botQueue.putBot(new Bot(userId, botCode, gameInfo));
         JSONObject returnInfo = new JSONObject();
         returnInfo.put("status_message", "Success");

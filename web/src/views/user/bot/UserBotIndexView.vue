@@ -27,11 +27,21 @@ export default {
 
     const initialCode = "package com.kob.botrunningsystem.utils;\n" +
         "\n" +
+        "import java.util.LinkedList;\n" +
         "import java.util.List;\n" +
+        "import java.util.Random;\n" +
+        "import java.util.function.Supplier;\n" +
         "\n" +
-        "public class BotInterfaceImpl implements com.kob.botrunningsystem.utils.BotInterface {\n" +
-        "    @Override\n" +
-        "    public Integer nextStep(\n" +
+        "public class Bot implements Supplier<Integer> {\n" +
+        "    private final int[][] gameMap;\n" +
+        "    private final Integer thisPlayerStartX;\n" +
+        "    private final Integer thisPlayerStartY;\n" +
+        "    private final List<Integer> thisPlayerSteps;\n" +
+        "    private final Integer anotherPlayerStartX;\n" +
+        "    private final Integer anotherPlayerStartY;\n" +
+        "    private final List<Integer> anotherPlayerSteps;\n" +
+        "\n" +
+        "    public Bot(\n" +
         "            int[][] gameMap,\n" +
         "            Integer thisPlayerStartX,\n" +
         "            Integer thisPlayerStartY,\n" +
@@ -40,8 +50,19 @@ export default {
         "            Integer anotherPlayerStartY,\n" +
         "            List<Integer> anotherPlayerSteps\n" +
         "    ) {\n" +
+        "        this.gameMap = gameMap;\n" +
+        "        this.thisPlayerStartX = thisPlayerStartX;\n" +
+        "        this.thisPlayerStartY = thisPlayerStartY;\n" +
+        "        this.thisPlayerSteps = thisPlayerSteps;\n" +
+        "        this.anotherPlayerStartX = anotherPlayerStartX;\n" +
+        "        this.anotherPlayerStartY = anotherPlayerStartY;\n" +
+        "        this.anotherPlayerSteps = anotherPlayerSteps;\n" +
+        "    }\n" +
+        "\n" +
+        "    @Override\n" +
+        "    public Integer get() {\n" +
         "        Integer direction = 0;\n" +
-        "        \n" +
+        "\n" +
         "        // 在此处编写你的Bot代码\n" +
         "\n" +
         "        return direction;\n" +

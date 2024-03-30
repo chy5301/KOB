@@ -12,7 +12,7 @@ public class BotQueue {
     public void putBot(Bot bot) {
         try {
             botQueue.put(bot);
-            System.out.println("Put bot success");
+            System.out.println("Thread " + Thread.currentThread().getName() + " put bot success");
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
