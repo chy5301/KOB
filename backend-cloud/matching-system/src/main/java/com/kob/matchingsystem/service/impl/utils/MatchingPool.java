@@ -28,7 +28,9 @@ public class MatchingPool implements Runnable {
     @EventListener(ApplicationReadyEvent.class)
     public void init() {
         Thread matchingPoolThread = new Thread(this);
+        matchingPoolThread.setName("matchingPoolThread");
         matchingPoolThread.start();
+        System.out.println("Thread "+matchingPoolThread.getName()+" start to match players");
     }
 
     // 添加用户到匹配池
@@ -75,7 +77,9 @@ public class MatchingPool implements Runnable {
     // 尝试匹配matchingPool中的所有玩家
     private void matchPlayers() {
         // 输出调试信息
-        System.out.println("Match players: " + matchingPool.toString());
+        if (!matchingPool.isEmpty()) {
+            System.out.println("Matching players: " + matchingPool.toString());
+        }
         boolean[] usedPlayers = new boolean[matchingPool.size()];
         for (int i = 0; i < matchingPool.size(); i++) {
             if (usedPlayers[i])
