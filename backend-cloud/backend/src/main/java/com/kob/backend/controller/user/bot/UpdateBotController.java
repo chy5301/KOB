@@ -18,7 +18,7 @@ public class UpdateBotController {
         this.updateBotService = updateBotService;
     }
 
-    @PostMapping("/user/bot/update")
+    @PostMapping("/api/user/bot/update")
     public JSONObject updateBot(@RequestParam Map<String, String> params) {
         return updateBotService.updateBot(params);
     }

@@ -18,7 +18,7 @@ public class RemoveBotController {
         this.removeBotService = removeBotService;
     }
 
-    @PostMapping("/user/bot/remove")
+    @PostMapping("/api/user/bot/remove")
     public JSONObject removeBot(@RequestParam Map<String, String> params) {
         return removeBotService.removeBot(params);
     }

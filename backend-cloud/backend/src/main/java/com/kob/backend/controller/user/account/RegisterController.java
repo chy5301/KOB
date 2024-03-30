@@ -18,7 +18,7 @@ public class RegisterController {
         this.registerService = registerService;
     }
 
-    @PostMapping("/user/account/register")
+    @PostMapping("/api/user/account/register")
     public JSONObject register(@RequestParam Map<String, String> params) {
         String username = params.get("username");
         String password = params.get("password");

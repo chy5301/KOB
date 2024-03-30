@@ -18,7 +18,7 @@ public class GetRankListController {
         this.getRankListService = getRankListService;
     }
 
-    @GetMapping("/ranklist/getlist")
+    @GetMapping("/api/ranklist")
     public JSONObject getRankList(@RequestParam Map<String,String> params){
         Integer pageNumber=Integer.parseInt(params.get("page_number"));
         Integer pageSize=Integer.parseInt(params.get("page_size"));

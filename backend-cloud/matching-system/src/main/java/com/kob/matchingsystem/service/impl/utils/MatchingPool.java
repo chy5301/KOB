@@ -17,7 +17,7 @@ public class MatchingPool implements Runnable {
     private static List<Player> matchingPool = new ArrayList<>();
     private final ReentrantLock lock = new ReentrantLock();
     private static RestTemplate restTemplate;
-    private static final String startGameUrl = "http://localhost:3000/pk/start/game";
+    private static final String startGameUrl = "http://localhost:3000/api/pk/start/game";
 
     @Autowired
     public void setRestTemplate(RestTemplate restTemplate) {

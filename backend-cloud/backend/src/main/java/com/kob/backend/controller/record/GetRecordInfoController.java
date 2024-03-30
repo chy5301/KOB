@@ -18,7 +18,7 @@ public class GetRecordInfoController {
         this.getRecordInfoService = getRecordInfoService;
     }
 
-    @GetMapping("/record/getinfo")
+    @GetMapping("/api/record/info")
     public JSONObject getRecordInfo(@RequestParam Map<String, String> params) {
         Integer recordId = Integer.parseInt(params.get("record_id"));
         return getRecordInfoService.getRecordInfo(recordId);

@@ -19,7 +19,7 @@ public class StartGameController {
         this.startGameService = startGameService;
     }
 
-    @PostMapping("/pk/start/game")
+    @PostMapping("/api/pk/start/game")
     public JSONObject startGame(@RequestParam MultiValueMap<String, String> params) {
         Integer player1Id = Integer.parseInt(Objects.requireNonNull(params.getFirst("player1_id")));
         Integer player1BotId = Integer.parseInt(Objects.requireNonNull(params.getFirst("player1_bot_id")));

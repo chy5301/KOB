@@ -16,7 +16,7 @@ public class GetBotListController {
         this.getBotListService = getBotListService;
     }
 
-    @GetMapping("/user/bot/getlist")
+    @GetMapping("/api/user/bot/list")
     public JSONObject getBotList() {
         return getBotListService.getBotList();
     }

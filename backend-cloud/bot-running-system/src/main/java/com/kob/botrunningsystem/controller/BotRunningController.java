@@ -19,7 +19,7 @@ public class BotRunningController {
         this.botRunningService = botRunningService;
     }
 
-    @PostMapping("/bot/add")
+    @PostMapping("/api/bot/add-task")
     public JSONObject addBot(@RequestParam MultiValueMap<String, String> params) {
         Integer userId = Integer.parseInt(Objects.requireNonNull(params.getFirst("user_id")));
         String botCode = params.getFirst("bot_code");

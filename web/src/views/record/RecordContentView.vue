@@ -16,7 +16,7 @@ export default {
 
     const getRecordInfo = recordId => {
       $.ajax({
-        url: "http://localhost:3000/record/getinfo",
+        url: "http://localhost:3000/api/record/info",
         /*
         这里需要将$.ajax请求设置成同步的，否则子组件PlayGround的加载会在请求获取到信息之前完成，
         导致等请求获取到record_info时，PlayGround组件已经先进行加载，获取到了错误的信息。

@@ -41,8 +41,8 @@ public class WebSocketServer {
     static {
         mapSize = 16;
         innerWallsCount = 32;
-        addPlayerUrl = "http://localhost:3001/player/add";
-        removePlayerUrl = "http://localhost:3001/player/remove";
+        addPlayerUrl = "http://localhost:3001/api/player/add";
+        removePlayerUrl = "http://localhost:3001/api/player/remove";
     }
 
     @Autowired

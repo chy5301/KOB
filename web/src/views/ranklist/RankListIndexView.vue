@@ -47,7 +47,7 @@ export default {
     const pullPage = (page, size) => {
       currentPage = page;
       $.ajax({
-        url: "http://localhost:3000/ranklist/getlist",
+        url: "http://localhost:3000/api/ranklist",
         data: {
           page_number: page,
           page_size: size,

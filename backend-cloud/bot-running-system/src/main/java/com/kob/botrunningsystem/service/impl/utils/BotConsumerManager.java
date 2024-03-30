@@ -26,7 +26,7 @@ public class BotConsumerManager {
     private final ThreadPoolTaskScheduler scheduler;
     private final BotQueue botQueue;
     private final List<BotTaskFuture> futureList = Collections.synchronizedList(new LinkedList<>());
-    private static final String receiveBotMoveUrl = "http://localhost:3000/pk/receive/bot/move";
+    private static final String receiveBotMoveUrl = "http://localhost:3000/api/pk/receive/bot/move";
 
     private record BotTaskFuture(Future<?> future, long startTime) {
     }

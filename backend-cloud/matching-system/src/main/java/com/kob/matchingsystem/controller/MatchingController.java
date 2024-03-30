@@ -19,7 +19,7 @@ public class MatchingController {
         this.matchingService = matchingService;
     }
 
-    @PostMapping("/player/add")
+    @PostMapping("/api/player/add")
     public JSONObject addPlayer(@RequestParam MultiValueMap<String, String> params) {
         Integer userId = Integer.parseInt(Objects.requireNonNull(params.getFirst("user_id")));
         Integer rating = Integer.parseInt(Objects.requireNonNull(params.getFirst("rating")));
@@ -27,7 +27,7 @@ public class MatchingController {
         return matchingService.addPlayer(userId, rating, botId);
     }
 
-    @PostMapping("/player/remove")
+    @PostMapping("/api/player/remove")
     public JSONObject removePlayer(@RequestParam MultiValueMap<String, String> params) {
         Integer userId = Integer.parseInt(Objects.requireNonNull(params.getFirst("user_id")));
         return matchingService.removePlayer(userId);

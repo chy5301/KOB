@@ -18,7 +18,7 @@ public class AddBotController {
         this.addBotService = addBotService;
     }
 
-    @PostMapping("/user/bot/add")
+    @PostMapping("/api/user/bot/add")
     public JSONObject addBot(@RequestParam Map<String, String> params) {
         return addBotService.addBot(params);
     }

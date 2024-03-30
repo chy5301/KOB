@@ -58,7 +58,7 @@ export default {
     // 刷新Bot列表
     const refreshBotList = () => {
       $.ajax({
-        url: "http://localhost:3000/user/bot/getlist",
+        url: "http://localhost:3000/api/user/bot/list",
         type: "GET",
         headers: {
           Authorization: "Bearer " + store.state.user.jwtToken,
@@ -77,7 +77,7 @@ export default {
     const addBot = () => {
       newBot.exception_message = "";
       $.ajax({
-        url: "http://localhost:3000/user/bot/add",
+        url: "http://localhost:3000/api/user/bot/add",
         type: "POST",
         data: {
           title: newBot.title,
@@ -104,7 +104,7 @@ export default {
     // 删除Bot
     const removeBot = (bot) => {
       $.ajax({
-        url: "http://localhost:3000/user/bot/remove",
+        url: "http://localhost:3000/api/user/bot/remove",
         type: "POST",
         data: {
           bot_id: bot.id,
@@ -126,7 +126,7 @@ export default {
     const updateBot = (bot) => {
       bot.exception_message = "";
       $.ajax({
-        url: "http://localhost:3000/user/bot/update",
+        url: "http://localhost:3000/api/user/bot/update",
         type: "POST",
         data: {
           bot_id: bot.id,

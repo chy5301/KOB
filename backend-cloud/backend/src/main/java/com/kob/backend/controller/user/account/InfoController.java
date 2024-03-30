@@ -15,7 +15,7 @@ public class InfoController {
         this.infoService = infoService;
     }
 
-    @GetMapping("/user/account/info")
+    @GetMapping("/api/user/account/info")
     public JSONObject getInfo() {
         return infoService.getInfo();
     }

@@ -18,7 +18,7 @@ public class LoginController {
         this.loginService = loginService;
     }
 
-    @PostMapping("/user/account/token")
+    @PostMapping("/api/user/account/token")
     public JSONObject getToken(@RequestParam Map<String, String> params) {
         String username = params.get("username");
         String password = params.get("password");
