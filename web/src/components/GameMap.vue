@@ -39,12 +39,18 @@ export default {
       playerInfo.playerPhoto = store.state.record.player1Photo;
       playerInfo.opponentUsername = store.state.record.player2Username;
       playerInfo.opponentPhoto = store.state.record.player2Photo;
+      if (parseInt(store.state.user.id) === parseInt(store.state.pk.player1Id)) {
+        playerInfo.playerUsername += "(你)";
+      }
+      if (parseInt(store.state.user.id) === parseInt(store.state.pk.player2Id)) {
+        playerInfo.opponentUsername += "(你)";
+      }
     } else {
-      if (store.state.user.id == store.state.pk.player2Id) {
+      if (parseInt(store.state.user.id) === parseInt(store.state.pk.player2Id)) {
         playerUsernameColor.player1Color = "color: " + red;
         playerUsernameColor.player2Color = "color: " + blue;
       }
-      playerInfo.playerUsername = store.state.user.username;
+      playerInfo.playerUsername = store.state.user.username + "(你)";
       playerInfo.playerPhoto = store.state.user.photo;
       playerInfo.opponentUsername = store.state.pk.opponentUsername;
       playerInfo.opponentPhoto = store.state.pk.opponentPhoto;
