@@ -49,7 +49,7 @@ export default {
     const pullPage = (page, size) => {
       currentPage = page;
       $.ajax({
-        url: "http://localhost:3000/api/record/list",
+        url: "http://47.95.158.98:8000/api/record/list",
         data: {
           page_number: page,
           page_size: size,

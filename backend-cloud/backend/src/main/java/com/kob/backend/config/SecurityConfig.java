@@ -75,7 +75,12 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/pk/start/game",
                                 "/api/pk/receive/bot/move"
-                        ).access(anyOf(hasIpAddress("127.0.0.1"), hasIpAddress("0:0:0:0:0:0:0:1")))
+                        ).access(anyOf(
+                                hasIpAddress("kob-matching-system"),
+                                hasIpAddress("kob-bot-running-system"),
+                                hasIpAddress("127.0.0.1"),
+                                hasIpAddress("0:0:0:0:0:0:0:1")
+                        ))
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         .anyRequest().authenticated()
                 )

@@ -15,7 +15,7 @@ export default {
   setup() {
     const store = useStore();
     // 这里是`不是单引号,字符串中有${}表达式操作的话，需要用`，不能用引号。
-    const socketUrl = `ws://localhost:3000/websocket/${store.state.user.jwtToken}`;
+    const socketUrl = `ws://47.95.158.98:8000/websocket/${store.state.user.jwtToken}`;
 
     // 每次进入pk页面，输赢状态重置
     store.commit("updateLoser", "none");

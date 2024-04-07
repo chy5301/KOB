@@ -35,7 +35,7 @@ export default {
         login(context, data) {
             $.ajax({
                 // 请求URL
-                url: "http://localhost:3000/api/user/account/token",
+                url: "http://47.95.158.98:8000/api/user/account/token",
                 // 请求类型
                 type: "POST",
                 // 请求数据
@@ -68,7 +68,7 @@ export default {
         getInfo(context, data) {
             $.ajax({
                 // 请求URL
-                url: "http://localhost:3000/api/user/account/info",
+                url: "http://47.95.158.98:8000/api/user/account/info",
                 // 请求类型
                 type: "GET",
                 // 将ajax函数从默认异步修改为同步的

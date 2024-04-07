@@ -28,7 +28,7 @@ export default {
     // 刷新Bot列表
     const refreshBotList = () => {
       $.ajax({
-        url: "http://localhost:3000/api/user/bot/list",
+        url: "http://47.95.158.98:8000/api/user/bot/list",
         type: "GET",
         headers: {
           Authorization: "Bearer " + store.state.user.jwtToken,

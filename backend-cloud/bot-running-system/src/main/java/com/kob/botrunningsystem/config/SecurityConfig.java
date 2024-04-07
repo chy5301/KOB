@@ -32,7 +32,11 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 设置会话创建策略为无状态
                 .authorizeHttpRequests((authorization) -> authorization // 配置HTTP请求的授权规则
                         .requestMatchers("/api/bot/task") // 匹配请求路径为"/api/bot/task"
-                        .access(anyOf(hasIpAddress("127.0.0.1"), hasIpAddress("0:0:0:0:0:0:0:1"))) // 对于匹配到的请求，需要满足具有IP地址"127.0.0.1"或"localhost"的用户才能访问
+                        .access(anyOf(
+                                hasIpAddress("kob-backend"),
+                                hasIpAddress("127.0.0.1"),
+                                hasIpAddress("0:0:0:0:0:0:0:1")
+                        )) // 对于匹配到的请求，需要满足具有IP地址"127.0.0.1"或"localhost"的用户才能访问
                         .requestMatchers(HttpMethod.OPTIONS).permitAll() // 对于OPTIONS请求方法的请求，允许所有用户访问
                         .anyRequest().authenticated() // 对于其他请求，需要已认证的用户才能访问
                 );

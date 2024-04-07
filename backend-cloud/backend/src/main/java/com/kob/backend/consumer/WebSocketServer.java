@@ -41,8 +41,8 @@ public class WebSocketServer {
     static {
         mapSize = 16;
         innerWallsCount = 32;
-        addPlayerUrl = "http://localhost:3001/api/player/add";
-        removePlayerUrl = "http://localhost:3001/api/player/remove";
+        addPlayerUrl = "http://kob-matching-system:3002/api/player/add";
+        removePlayerUrl = "http://kob-matching-system:3002/api/player/remove";
     }
 
     @Autowired

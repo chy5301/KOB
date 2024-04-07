@@ -17,7 +17,7 @@ public class MatchingPool implements Runnable {
     private static List<Player> matchingPool = new ArrayList<>();
     private final ReentrantLock lock = new ReentrantLock();
     private static RestTemplate restTemplate;
-    private static final String startGameUrl = "http://localhost:3000/api/pk/start/game";
+    private static final String startGameUrl = "http://kob-backend:3001/api/pk/start/game";
 
     @Autowired
     public void setRestTemplate(RestTemplate restTemplate) {
@@ -30,7 +30,7 @@ public class MatchingPool implements Runnable {
         Thread matchingPoolThread = new Thread(this);
         matchingPoolThread.setName("matchingPoolThread");
         matchingPoolThread.start();
-        System.out.println("Thread "+matchingPoolThread.getName()+" start to match players");
+        System.out.println("Thread " + matchingPoolThread.getName() + " start to match players");
     }
 
     // 添加用户到匹配池
